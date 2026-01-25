@@ -1,3 +1,3 @@
-export * from './queries'
-export * from './mutations'
-export { USERS_ENDPOINTS } from './endpoints'
+export { USERS_ENDPOINTS } from "./endpoints";
+export * from "./mutations";
+export * from "./queries";

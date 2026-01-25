@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Home, Menu, X, LogOut } from "lucide-react";
+import { Home, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeSwitcher } from "./ThemeSwitcher";
@@ -23,6 +23,7 @@ export default function Header() {
 						onClick={() => setIsOpen(true)}
 						className="p-2 hover:bg-accent rounded-lg transition-colors"
 						aria-label="Open menu"
+						type="button"
 					>
 						<Menu size={24} />
 					</button>
@@ -73,6 +74,7 @@ export default function Header() {
 						onClick={() => setIsOpen(false)}
 						className="p-2 hover:bg-accent rounded-lg transition-colors"
 						aria-label="Close menu"
+						type="button"
 					>
 						<X size={24} />
 					</button>

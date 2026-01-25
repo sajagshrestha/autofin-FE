@@ -1,9 +1,8 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useForm } from "@tanstack/react-form";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -11,35 +10,40 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '@/components/ui/card'
-import { Link } from '@tanstack/react-router'
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
+import { type LoginFormData, loginSchema } from "@/schemas/auth";
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute("/login")({
 	component: LoginPage,
-})
+});
 
 function LoginPage() {
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [error, setError] = useState<string | null>(null)
-	const [loading, setLoading] = useState(false)
-	const { signIn } = useAuth()
-	const navigate = useNavigate()
+	const [serverError, setServerError] = useState<string | null>(null);
+	const { signIn } = useAuth();
+	const navigate = useNavigate();
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
-		setError(null)
-		setLoading(true)
+	const form = useForm({
+		defaultValues: {
+			email: "",
+			password: "",
+		} as LoginFormData,
+		onSubmit: async ({ value }) => {
+			setServerError(null);
+			const { error } = await signIn(value.email, value.password);
 
-		const { error } = await signIn(email, password)
-
-		if (error) {
-			setError(error.message)
-			setLoading(false)
-		} else {
-			navigate({ to: '/' })
-		}
-	}
+			if (error) {
+				setServerError(error.message);
+			} else {
+				navigate({ to: "/" });
+			}
+		},
+		validators: {
+			onSubmit: loginSchema,
+		},
+	});
 
 	return (
 		<div className="flex min-h-screen items-center justify-center p-4">
@@ -50,43 +54,92 @@ function LoginPage() {
 						Enter your email and password to sign in
 					</CardDescription>
 				</CardHeader>
-				<form onSubmit={handleSubmit}>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						form.handleSubmit();
+					}}
+				>
 					<CardContent className="space-y-4">
-						{error && (
+						{serverError && (
 							<div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
-								{error}
+								{serverError}
 							</div>
 						)}
-						<div className="space-y-2">
-							<Label htmlFor="email">Email</Label>
-							<Input
-								id="email"
-								type="email"
-								placeholder="you@example.com"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								required
-								disabled={loading}
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="password">Password</Label>
-							<Input
-								id="password"
-								type="password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								required
-								disabled={loading}
-							/>
-						</div>
+						<form.Field
+							name="email"
+							validators={{
+								onBlur: z
+									.string()
+									.min(1, "Email is required")
+									.email("Please enter a valid email address"),
+							}}
+						>
+							{(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>Email</Label>
+									<Input
+										id={field.name}
+										type="email"
+										placeholder="you@example.com"
+										value={field.state.value}
+										onChange={(e) => field.handleChange(e.target.value)}
+										onBlur={field.handleBlur}
+										disabled={form.state.isSubmitting}
+										aria-invalid={
+											field.state.meta.errors.length > 0 ? "true" : undefined
+										}
+									/>
+									{field.state.meta.isTouched &&
+										field.state.meta.errors.length > 0 && (
+											<p className="text-sm text-destructive">
+												{field.state.meta.errors.join(", ")}
+											</p>
+										)}
+								</div>
+							)}
+						</form.Field>
+						<form.Field
+							name="password"
+							validators={{
+								onBlur: z.string().min(1, "Password is required"),
+							}}
+						>
+							{(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>Password</Label>
+									<Input
+										id={field.name}
+										type="password"
+										value={field.state.value}
+										onChange={(e) => field.handleChange(e.target.value)}
+										onBlur={field.handleBlur}
+										disabled={form.state.isSubmitting}
+										aria-invalid={
+											field.state.meta.errors.length > 0 ? "true" : undefined
+										}
+									/>
+									{field.state.meta.isTouched &&
+										field.state.meta.errors.length > 0 && (
+											<p className="text-sm text-destructive">
+												{field.state.meta.errors.join(", ")}
+											</p>
+										)}
+								</div>
+							)}
+						</form.Field>
 					</CardContent>
 					<CardFooter className="flex flex-col space-y-4">
-						<Button type="submit" className="w-full" disabled={loading}>
-							{loading ? 'Signing in...' : 'Sign In'}
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={form.state.isSubmitting}
+						>
+							{form.state.isSubmitting ? "Signing in..." : "Sign In"}
 						</Button>
 						<p className="text-center text-sm text-muted-foreground">
-							Don't have an account?{' '}
+							Don't have an account?{" "}
 							<Link
 								to="/signup"
 								className="text-primary hover:underline font-medium"
@@ -98,5 +151,5 @@ function LoginPage() {
 				</form>
 			</Card>
 		</div>
-	)
+	);
 }

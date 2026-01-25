@@ -1,10 +1,10 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
-import Header from '../components/Header'
-import { AuthProvider } from '../contexts/AuthContext'
-import { ThemeProvider } from '../contexts/ThemeContext'
+import Header from "../components/Header";
+import { AuthProvider } from "../contexts/AuthContext";
+import { ThemeProvider } from "../contexts/ThemeContext";
 
 export const Route = createRootRoute({
 	component: () => (
@@ -14,11 +14,11 @@ export const Route = createRootRoute({
 				<Outlet />
 				<TanStackDevtools
 					config={{
-						position: 'bottom-right',
+						position: "bottom-right",
 					}}
 					plugins={[
 						{
-							name: 'Tanstack Router',
+							name: "Tanstack Router",
 							render: <TanStackRouterDevtoolsPanel />,
 						},
 					]}
@@ -26,4 +26,4 @@ export const Route = createRootRoute({
 			</AuthProvider>
 		</ThemeProvider>
 	),
-})
+});

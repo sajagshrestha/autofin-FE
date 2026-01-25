@@ -1,36 +1,48 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const TabsContext = React.createContext<{
-	value: string
-	onValueChange?: (value: string) => void
-} | null>(null)
+	value: string;
+	onValueChange?: (value: string) => void;
+} | null>(null);
 
 const Tabs = React.forwardRef<
 	HTMLDivElement,
-	React.HTMLAttributes<HTMLDivElement> & { defaultValue?: string; value?: string; onValueChange?: (value: string) => void }
->(({ className, defaultValue, value, onValueChange, children, ...props }, ref) => {
-	const [internalValue, setInternalValue] = React.useState(defaultValue ?? "")
-	const currentValue = value ?? internalValue
-	const handleValueChange = React.useCallback((newValue: string) => {
-		setInternalValue(newValue)
-		onValueChange?.(newValue)
-	}, [onValueChange])
+	React.HTMLAttributes<HTMLDivElement> & {
+		defaultValue?: string;
+		value?: string;
+		onValueChange?: (value: string) => void;
+	}
+>(
+	(
+		{ className, defaultValue, value, onValueChange, children, ...props },
+		ref,
+	) => {
+		const [internalValue, setInternalValue] = React.useState(
+			defaultValue ?? "",
+		);
+		const currentValue = value ?? internalValue;
+		const handleValueChange = React.useCallback(
+			(newValue: string) => {
+				setInternalValue(newValue);
+				onValueChange?.(newValue);
+			},
+			[onValueChange],
+		);
 
-	return (
-		<TabsContext.Provider value={{ value: currentValue, onValueChange: handleValueChange }}>
-			<div
-				ref={ref}
-				className={cn("w-full", className)}
-				{...props}
+		return (
+			<TabsContext.Provider
+				value={{ value: currentValue, onValueChange: handleValueChange }}
 			>
-				{children}
-			</div>
-		</TabsContext.Provider>
-	)
-})
-Tabs.displayName = "Tabs"
+				<div ref={ref} className={cn("w-full", className)} {...props}>
+					{children}
+				</div>
+			</TabsContext.Provider>
+		);
+	},
+);
+Tabs.displayName = "Tabs";
 
 const TabsList = React.forwardRef<
 	HTMLDivElement,
@@ -40,19 +52,19 @@ const TabsList = React.forwardRef<
 		ref={ref}
 		className={cn(
 			"inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground",
-			className
+			className,
 		)}
 		{...props}
 	/>
-))
-TabsList.displayName = "TabsList"
+));
+TabsList.displayName = "TabsList";
 
 const TabsTrigger = React.forwardRef<
 	HTMLButtonElement,
 	React.ButtonHTMLAttributes<HTMLButtonElement> & { value: string }
 >(({ className, value, ...props }, ref) => {
-	const parent = React.useContext(TabsContext)
-	const isActive = parent?.value === value
+	const parent = React.useContext(TabsContext);
+	const isActive = parent?.value === value;
 
 	return (
 		<button
@@ -63,33 +75,33 @@ const TabsTrigger = React.forwardRef<
 				isActive
 					? "bg-background text-foreground shadow"
 					: "hover:bg-background/50",
-				className
+				className,
 			)}
 			onClick={() => parent?.onValueChange?.(value)}
 			{...props}
 		/>
-	)
-})
-TabsTrigger.displayName = "TabsTrigger"
+	);
+});
+TabsTrigger.displayName = "TabsTrigger";
 
 const TabsContent = React.forwardRef<
 	HTMLDivElement,
 	React.HTMLAttributes<HTMLDivElement> & { value: string }
 >(({ className, value, ...props }, ref) => {
-	const parent = React.useContext(TabsContext)
-	if (!parent || parent.value !== value) return null
+	const parent = React.useContext(TabsContext);
+	if (!parent || parent.value !== value) return null;
 
 	return (
 		<div
 			ref={ref}
 			className={cn(
 				"mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-				className
+				className,
 			)}
 			{...props}
 		/>
-	)
-})
-TabsContent.displayName = "TabsContent"
+	);
+});
+TabsContent.displayName = "TabsContent";
 
-export { Tabs, TabsList, TabsTrigger, TabsContent }
+export { Tabs, TabsList, TabsTrigger, TabsContent };

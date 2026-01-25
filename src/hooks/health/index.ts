@@ -1,2 +1,2 @@
-export * from './queries'
-export { HEALTH_ENDPOINTS } from './endpoints'
+export { HEALTH_ENDPOINTS } from "./endpoints";
+export * from "./queries";

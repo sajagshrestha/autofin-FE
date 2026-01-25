@@ -1,27 +1,27 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@/components/ui/button'
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '@/components/ui/card'
+} from "@/components/ui/card";
+import { useAuth } from "@/contexts/AuthContext";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
 	component: HomePage,
-})
+});
 
 function HomePage() {
-	const { user, loading } = useAuth()
+	const { user, loading } = useAuth();
 
 	if (loading) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
 				<div className="text-muted-foreground">Loading...</div>
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -33,7 +33,7 @@ function HomePage() {
 						<CardDescription className="text-lg">
 							{user
 								? `You are signed in as ${user.email}`
-								: 'Get started by signing in or creating an account'}
+								: "Get started by signing in or creating an account"}
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
@@ -59,5 +59,5 @@ function HomePage() {
 				</Card>
 			</div>
 		</div>
-	)
+	);
 }

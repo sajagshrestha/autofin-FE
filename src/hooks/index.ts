@@ -8,11 +8,9 @@
  * import { useGetAllUsers } from '@/hooks/users'
  */
 
-// Users
-export * from './users'
-
 // Gmail OAuth
-export * from './gmail'
-
+export * from "./gmail";
 // Health
-export * from './health'
+export * from "./health";
+// Users
+export * from "./users";

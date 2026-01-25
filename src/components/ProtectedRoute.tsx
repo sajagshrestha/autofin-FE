@@ -1,20 +1,20 @@
-import { Navigate, Outlet } from '@tanstack/react-router'
-import { useAuth } from '@/contexts/AuthContext'
+import { Navigate, Outlet } from "@tanstack/react-router";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function ProtectedRoute() {
-	const { user, loading } = useAuth()
+	const { user, loading } = useAuth();
 
 	if (loading) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
 				<div className="text-muted-foreground">Loading...</div>
 			</div>
-		)
+		);
 	}
 
 	if (!user) {
-		return <Navigate to="/login" />
+		return <Navigate to="/login" />;
 	}
 
-	return <Outlet />
+	return <Outlet />;
 }
