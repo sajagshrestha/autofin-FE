@@ -14,3 +14,17 @@ export function useRefreshGmailAccessToken() {
 export function useDisconnectGmailAccount() {
 	return $api.useMutation("delete", GMAIL_ENDPOINTS.REVOKE);
 }
+
+/**
+ * Starts watching Gmail for push notifications via Pub/Sub
+ */
+export function useStartGmailWatch() {
+	return $api.useMutation("post", GMAIL_ENDPOINTS.WATCH);
+}
+
+/**
+ * Stops watching Gmail push notifications
+ */
+export function useStopGmailWatch() {
+	return $api.useMutation("delete", GMAIL_ENDPOINTS.WATCH);
+}
