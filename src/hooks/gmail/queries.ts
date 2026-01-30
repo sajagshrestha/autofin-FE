@@ -59,7 +59,7 @@ export function useGetGmailMessage(
 	messageId: string,
 	params?: {
 		format?: "full" | "metadata" | "minimal";
-	}
+	},
 ) {
 	return $api.useQuery("get", GMAIL_ENDPOINTS.MESSAGE, {
 		params: {
@@ -92,4 +92,11 @@ export function useGetGmailHistory(params: {
 			query: params,
 		},
 	});
+}
+
+/**
+ * Lists all labels in the user's Gmail account
+ */
+export function useGetGmailLabels() {
+	return $api.useQuery("get", GMAIL_ENDPOINTS.LABELS, {});
 }

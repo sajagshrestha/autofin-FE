@@ -4,2472 +4,2475 @@
  */
 
 export interface paths {
-    "/api/v1/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all users
-         * @description Retrieve a list of all users
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of users */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            users: {
-                                id: string;
-                                /** Format: email */
-                                email: string;
-                                /** Format: date-time */
-                                createdAt: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                            }[];
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        /**
-         * Create a new user
-         * @description Create a new user with email
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        /** Format: email */
-                        email: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description User created successfully */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            user: {
-                                id: string;
-                                /** Format: email */
-                                email: string;
-                                /** Format: date-time */
-                                createdAt: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Bad request */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/users/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get user by ID
-         * @description Retrieve a specific user by their ID
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description User ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description User details */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            user: {
-                                id: string;
-                                /** Format: email */
-                                email: string;
-                                /** Format: date-time */
-                                createdAt: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description User not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        /**
-         * Update user
-         * @description Update an existing user
-         */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description User ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        /** Format: email */
-                        email?: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description User updated successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            user: {
-                                id: string;
-                                /** Format: email */
-                                email: string;
-                                /** Format: date-time */
-                                createdAt: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description User not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        post?: never;
-        /**
-         * Delete user
-         * @description Delete a user by ID
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description User ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description User deleted successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description User not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/oauth/authorize": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Gmail OAuth authorization URL
-         * @description Returns the URL to redirect the user to for Gmail OAuth authorization
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Authorization URL generated successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** Format: uri */
-                            authorizationUrl: string;
-                            state: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Gmail OAuth not configured */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/oauth/callback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Handle Gmail OAuth callback
-         * @description Exchanges the authorization code for tokens and stores them
-         */
-        get: {
-            parameters: {
-                query?: {
-                    code?: string;
-                    state?: string;
-                    error?: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OAuth callback processed successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success: boolean;
-                            message: string;
-                            /** Format: email */
-                            emailAddress?: string;
-                        };
-                    };
-                };
-                /** @description Bad request - missing or invalid parameters */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/oauth/refresh": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Refresh Gmail OAuth token
-         * @description Manually refresh the access token for the authenticated user
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Token refreshed successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success: boolean;
-                            message: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to refresh token */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/oauth/revoke": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * Revoke Gmail OAuth tokens
-         * @description Revokes and deletes the Gmail OAuth tokens for the authenticated user
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Tokens revoked successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success: boolean;
-                            message: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to revoke tokens */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/oauth/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Gmail OAuth status
-         * @description Returns the current OAuth token status for the authenticated user
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OAuth status retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            authorized: boolean;
-                            /** Format: email */
-                            emailAddress?: string;
-                            /** Format: date-time */
-                            expiresAt?: string;
-                            isExpired?: boolean;
-                            isValid?: boolean;
-                            scope?: string;
-                            /** Format: date-time */
-                            createdAt?: string;
-                            /** Format: date-time */
-                            updatedAt?: string;
-                            message?: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to get OAuth status */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/oauth/test/lookup": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Test lookup OAuth token by email
-         * @description Test endpoint to lookup an OAuth token by email address (for debugging)
-         */
-        get: {
-            parameters: {
-                query: {
-                    email: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Lookup completed */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            found: boolean;
-                            /** Format: email */
-                            emailAddress?: string;
-                            userId?: string;
-                            queryTimeMs: number;
-                            message?: string;
-                        };
-                    };
-                };
-                /** @description Lookup failed */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/profile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Gmail profile
-         * @description Returns the Gmail profile for the authenticated user
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Gmail profile retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** Format: email */
-                            emailAddress: string;
-                            messagesTotal: number;
-                            threadsTotal: number;
-                            historyId: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No Gmail OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to fetch Gmail profile */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/labels": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List Gmail labels
-         * @description Returns all labels in the user's Gmail account. Use this to find label IDs for filtering messages or setting up watch notifications.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Labels listed successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description List of labels */
-                            labels: {
-                                /**
-                                 * @description The immutable ID of the label
-                                 * @example Label_1234567890123456789
-                                 */
-                                id: string;
-                                /**
-                                 * @description The display name of the label
-                                 * @example My Custom Label
-                                 */
-                                name: string;
-                                /**
-                                 * @description Visibility of messages with this label in the message list
-                                 * @enum {string}
-                                 */
-                                messageListVisibility?: "show" | "hide";
-                                /**
-                                 * @description Visibility of the label in the label list
-                                 * @enum {string}
-                                 */
-                                labelListVisibility?: "labelShow" | "labelShowIfUnread" | "labelHide";
-                                /**
-                                 * @description Label type - system labels are built-in, user labels are custom
-                                 * @example user
-                                 * @enum {string}
-                                 */
-                                type: "system" | "user";
-                                /** @description Total number of messages with this label */
-                                messagesTotal?: number;
-                                /** @description Number of unread messages with this label */
-                                messagesUnread?: number;
-                                /** @description Total number of threads with this label */
-                                threadsTotal?: number;
-                                /** @description Number of unread threads with this label */
-                                threadsUnread?: number;
-                                /** @description Label color settings (only for user labels) */
-                                color?: {
-                                    /**
-                                     * @description Text color as hex code
-                                     * @example #000000
-                                     */
-                                    textColor: string;
-                                    /**
-                                     * @description Background color as hex code
-                                     * @example #ffffff
-                                     */
-                                    backgroundColor: string;
-                                };
-                            }[];
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No Gmail OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to fetch labels */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/messages": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List Gmail messages
-         * @description Lists messages in the user's mailbox with optional search query
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Gmail search query (e.g., "from:example@gmail.com", "is:unread") */
-                    q?: string;
-                    /** @description Maximum number of messages to return */
-                    maxResults?: number;
-                    /** @description Page token for pagination */
-                    pageToken?: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Messages listed successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            messages: {
-                                id: string;
-                                threadId: string;
-                            }[];
-                            nextPageToken?: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No Gmail OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to list messages */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/messages/{messageId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Gmail message
-         * @description Returns a specific Gmail message by ID
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description The format to return the message in */
-                    format?: "full" | "metadata" | "minimal";
-                };
-                header?: never;
-                path: {
-                    /** @description Gmail message ID */
-                    messageId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Message retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            id: string;
-                            threadId: string;
-                            labelIds: string[];
-                            snippet: string;
-                            historyId: string;
-                            internalDate: string;
-                            payload?: {
-                                partId: string;
-                                mimeType: string;
-                                filename?: string;
-                                headers?: {
-                                    name: string;
-                                    value: string;
-                                }[];
-                                body?: {
-                                    attachmentId?: string;
-                                    size: number;
-                                    data?: string;
-                                };
-                                parts?: {
-                                    partId: string;
-                                    mimeType: string;
-                                    filename?: string;
-                                    headers?: {
-                                        name: string;
-                                        value: string;
-                                    }[];
-                                    body?: {
-                                        attachmentId?: string;
-                                        size: number;
-                                        data?: string;
-                                    };
-                                    parts?: unknown[];
-                                }[];
-                            };
-                            sizeEstimate: number;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Message or OAuth token not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to fetch message */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/messages/{messageId}/attachments/{attachmentId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get message attachment
-         * @description Returns the attachment data for a specific message
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Gmail message ID */
-                    messageId: string;
-                    /** @description Attachment ID */
-                    attachmentId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Attachment retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            size: number;
-                            /** @description Base64-encoded attachment data */
-                            data: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Attachment or OAuth token not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to fetch attachment */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get mailbox history
-         * @description Returns the history of changes to the mailbox since a given historyId
-         */
-        get: {
-            parameters: {
-                query: {
-                    /** @description History ID to start from */
-                    startHistoryId: string;
-                    /** @description Maximum number of history records to return */
-                    maxResults?: number;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description History retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            history: {
-                                historyId: string;
-                                messages?: {
-                                    id: string;
-                                    threadId: string;
-                                }[];
-                                messagesAdded?: {
-                                    message: {
-                                        id: string;
-                                        threadId: string;
-                                        labelIds: string[];
-                                        snippet: string;
-                                        historyId: string;
-                                        internalDate: string;
-                                        payload?: {
-                                            partId: string;
-                                            mimeType: string;
-                                            filename?: string;
-                                            headers?: {
-                                                name: string;
-                                                value: string;
-                                            }[];
-                                            body?: {
-                                                attachmentId?: string;
-                                                size: number;
-                                                data?: string;
-                                            };
-                                            parts?: {
-                                                partId: string;
-                                                mimeType: string;
-                                                filename?: string;
-                                                headers?: {
-                                                    name: string;
-                                                    value: string;
-                                                }[];
-                                                body?: {
-                                                    attachmentId?: string;
-                                                    size: number;
-                                                    data?: string;
-                                                };
-                                                parts?: unknown[];
-                                            }[];
-                                        };
-                                        sizeEstimate: number;
-                                    };
-                                }[];
-                                messagesDeleted?: {
-                                    message: {
-                                        id: string;
-                                        threadId: string;
-                                    };
-                                }[];
-                                labelsAdded?: {
-                                    message: {
-                                        id: string;
-                                        threadId: string;
-                                    };
-                                    labelIds: string[];
-                                }[];
-                                labelsRemoved?: {
-                                    message: {
-                                        id: string;
-                                        threadId: string;
-                                    };
-                                    labelIds: string[];
-                                }[];
-                            }[];
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No Gmail OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to fetch history */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/watch": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Start watching Gmail
-         * @description Sets up a Gmail push notification subscription via Pub/Sub
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        /**
-                         * @description Google Cloud Pub/Sub topic name
-                         * @example projects/my-project/topics/gmail-notifications
-                         */
-                        topicName?: string;
-                        /**
-                         * @description Label IDs to watch (e.g., ["INBOX", "UNREAD"])
-                         * @example [
-                         *       "INBOX"
-                         *     ]
-                         */
-                        labelIds?: string[];
-                    };
-                };
-            };
-            responses: {
-                /** @description Watch started successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            historyId: string;
-                            expiration: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No Gmail OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to start watch */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        /**
-         * Stop watching Gmail
-         * @description Stops the Gmail push notification subscription
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Watch stopped successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success: boolean;
-                            message?: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No Gmail OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to stop watch */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/gmail/watch/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Gmail watch status
-         * @description Checks if a Gmail watch exists by calling the watch API (idempotent). Returns current watch info including expiration.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Watch status retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            hasWatch: boolean;
-                            historyId?: string;
-                            expiration?: string;
-                            /** Format: date-time */
-                            expiresAt?: string;
-                            expiresInHours?: number;
-                            isExpired?: boolean;
-                            topicName?: string;
-                            message?: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description No Gmail OAuth token found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Failed to get watch status */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all categories
-         * @description Retrieve all categories (predefined + user custom)
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of categories */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            categories: {
-                                id: string;
-                                userId: string | null;
-                                name: string;
-                                icon: string | null;
-                                isDefault: boolean;
-                                isAiCreated: boolean;
-                                /** Format: date-time */
-                                createdAt: string;
-                            }[];
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        /**
-         * Create custom category
-         * @description Create a new custom category for the user
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        name: string;
-                        icon?: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description Category created successfully */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            category: {
-                                id: string;
-                                userId: string | null;
-                                name: string;
-                                icon: string | null;
-                                isDefault: boolean;
-                                isAiCreated: boolean;
-                                /** Format: date-time */
-                                createdAt: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Bad request */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/categories/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get category by ID
-         * @description Retrieve a specific category by its ID
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Category ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Category details */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            category: {
-                                id: string;
-                                userId: string | null;
-                                name: string;
-                                icon: string | null;
-                                isDefault: boolean;
-                                isAiCreated: boolean;
-                                /** Format: date-time */
-                                createdAt: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Category not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /**
-         * Delete custom category
-         * @description Delete a custom category (cannot delete predefined categories)
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Category ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Category deleted successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Category not found or cannot be deleted */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /**
-         * Update custom category
-         * @description Update an existing custom category (cannot update predefined categories)
-         */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Category ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        name?: string;
-                        icon?: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description Category updated successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            category: {
-                                id: string;
-                                userId: string | null;
-                                name: string;
-                                icon: string | null;
-                                isDefault: boolean;
-                                isAiCreated: boolean;
-                                /** Format: date-time */
-                                createdAt: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Category not found or cannot be updated */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/api/v1/transactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get all transactions
-         * @description Retrieve all transactions for the authenticated user with optional filters
-         */
-        get: {
-            parameters: {
-                query?: {
-                    categoryId?: string;
-                    type?: "debit" | "credit";
-                    startDate?: string;
-                    endDate?: string;
-                    minAmount?: number | null;
-                    maxAmount?: number | null;
-                    limit?: number;
-                    offset?: number | null;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of transactions */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            transactions: {
-                                id: string;
-                                userId: string;
-                                categoryId: string | null;
-                                amount: string;
-                                /** @enum {string} */
-                                type: "debit" | "credit";
-                                currency: string | null;
-                                merchant: string | null;
-                                accountNumber: string | null;
-                                bankName: string | null;
-                                /** Format: date-time */
-                                transactionDate: string | null;
-                                remarks: string | null;
-                                emailId: string | null;
-                                aiConfidence: string | null;
-                                isAiCreated: boolean;
-                                /** Format: date-time */
-                                createdAt: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                                category: {
-                                    id: string;
-                                    name: string;
-                                    icon: string | null;
-                                } | null;
-                            }[];
-                            total: number;
-                            limit: number;
-                            offset: number;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/transactions/summary": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get transaction summary
-         * @description Get summary statistics (total debit, credit, count) for the user
-         */
-        get: {
-            parameters: {
-                query?: {
-                    startDate?: string;
-                    endDate?: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Transaction summary */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            summary: {
-                                totalDebit: number;
-                                totalCredit: number;
-                                transactionCount: number;
-                                netAmount: number;
-                            };
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/transactions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get transaction by ID
-         * @description Retrieve a specific transaction by its ID
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Transaction ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Transaction details */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            transaction: {
-                                id: string;
-                                userId: string;
-                                categoryId: string | null;
-                                amount: string;
-                                /** @enum {string} */
-                                type: "debit" | "credit";
-                                currency: string | null;
-                                merchant: string | null;
-                                accountNumber: string | null;
-                                bankName: string | null;
-                                /** Format: date-time */
-                                transactionDate: string | null;
-                                remarks: string | null;
-                                emailId: string | null;
-                                aiConfidence: string | null;
-                                isAiCreated: boolean;
-                                /** Format: date-time */
-                                createdAt: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                                category: {
-                                    id: string;
-                                    name: string;
-                                    icon: string | null;
-                                } | null;
-                            };
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Transaction not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /**
-         * Delete transaction
-         * @description Delete a transaction by ID
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Transaction ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Transaction deleted successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Transaction not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /**
-         * Update transaction
-         * @description Update transaction details (category, merchant, remarks)
-         */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description Transaction ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        categoryId?: string;
-                        merchant?: string;
-                        remarks?: string;
-                        /** Format: date-time */
-                        transactionDate?: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description Transaction updated successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            transaction: {
-                                id: string;
-                                userId: string;
-                                categoryId: string | null;
-                                amount: string;
-                                /** @enum {string} */
-                                type: "debit" | "credit";
-                                currency: string | null;
-                                merchant: string | null;
-                                accountNumber: string | null;
-                                bankName: string | null;
-                                /** Format: date-time */
-                                transactionDate: string | null;
-                                remarks: string | null;
-                                emailId: string | null;
-                                aiConfidence: string | null;
-                                isAiCreated: boolean;
-                                /** Format: date-time */
-                                createdAt: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                                category: {
-                                    id: string;
-                                    name: string;
-                                    icon: string | null;
-                                } | null;
-                            };
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-                /** @description Transaction not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            message?: string;
-                            details?: unknown;
-                        };
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/api/v1/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Health check
-         * @description Check if the API v1 is healthy
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description API is healthy */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            status: string;
-                            version: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+	"/api/v1/users": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get all users
+		 * @description Retrieve a list of all users
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description List of users */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							users: {
+								id: string;
+								/** Format: email */
+								email: string;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+							}[];
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		/**
+		 * Create a new user
+		 * @description Create a new user with email
+		 */
+		post: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": {
+						/** Format: email */
+						email: string;
+					};
+				};
+			};
+			responses: {
+				/** @description User created successfully */
+				201: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							user: {
+								id: string;
+								/** Format: email */
+								email: string;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+							};
+						};
+					};
+				};
+				/** @description Bad request */
+				400: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/users/{id}": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get user by ID
+		 * @description Retrieve a specific user by their ID
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description User ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description User details */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							user: {
+								id: string;
+								/** Format: email */
+								email: string;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+							};
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description User not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		/**
+		 * Update user
+		 * @description Update an existing user
+		 */
+		put: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description User ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": {
+						/** Format: email */
+						email?: string;
+					};
+				};
+			};
+			responses: {
+				/** @description User updated successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							user: {
+								id: string;
+								/** Format: email */
+								email: string;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+							};
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description User not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		post?: never;
+		/**
+		 * Delete user
+		 * @description Delete a user by ID
+		 */
+		delete: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description User ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description User deleted successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							message: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description User not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/oauth/authorize": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get Gmail OAuth authorization URL
+		 * @description Returns the URL to redirect the user to for Gmail OAuth authorization
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Authorization URL generated successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							/** Format: uri */
+							authorizationUrl: string;
+							state: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Gmail OAuth not configured */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/oauth/callback": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Handle Gmail OAuth callback
+		 * @description Exchanges the authorization code for tokens and stores them
+		 */
+		get: {
+			parameters: {
+				query?: {
+					code?: string;
+					state?: string;
+					error?: string;
+				};
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description OAuth callback processed successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							success: boolean;
+							message: string;
+							/** Format: email */
+							emailAddress?: string;
+						};
+					};
+				};
+				/** @description Bad request - missing or invalid parameters */
+				400: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Server error */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/oauth/refresh": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Refresh Gmail OAuth token
+		 * @description Manually refresh the access token for the authenticated user
+		 */
+		post: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Token refreshed successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							success: boolean;
+							message: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to refresh token */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/oauth/revoke": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		post?: never;
+		/**
+		 * Revoke Gmail OAuth tokens
+		 * @description Revokes and deletes the Gmail OAuth tokens for the authenticated user
+		 */
+		delete: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Tokens revoked successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							success: boolean;
+							message: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to revoke tokens */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/oauth/status": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get Gmail OAuth status
+		 * @description Returns the current OAuth token status for the authenticated user
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description OAuth status retrieved successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							authorized: boolean;
+							/** Format: email */
+							emailAddress?: string;
+							/** Format: date-time */
+							expiresAt?: string;
+							isExpired?: boolean;
+							isValid?: boolean;
+							scope?: string;
+							/** Format: date-time */
+							createdAt?: string;
+							/** Format: date-time */
+							updatedAt?: string;
+							message?: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to get OAuth status */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/oauth/test/lookup": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Test lookup OAuth token by email
+		 * @description Test endpoint to lookup an OAuth token by email address (for debugging)
+		 */
+		get: {
+			parameters: {
+				query: {
+					email: string;
+				};
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Lookup completed */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							found: boolean;
+							/** Format: email */
+							emailAddress?: string;
+							userId?: string;
+							queryTimeMs: number;
+							message?: string;
+						};
+					};
+				};
+				/** @description Lookup failed */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/profile": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get Gmail profile
+		 * @description Returns the Gmail profile for the authenticated user
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Gmail profile retrieved successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							/** Format: email */
+							emailAddress: string;
+							messagesTotal: number;
+							threadsTotal: number;
+							historyId: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No Gmail OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to fetch Gmail profile */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/labels": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * List Gmail labels
+		 * @description Returns all labels in the user's Gmail account. Use this to find label IDs for filtering messages or setting up watch notifications.
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Labels listed successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							/** @description List of labels */
+							labels: {
+								/**
+								 * @description The immutable ID of the label
+								 * @example Label_1234567890123456789
+								 */
+								id: string;
+								/**
+								 * @description The display name of the label
+								 * @example My Custom Label
+								 */
+								name: string;
+								/**
+								 * @description Visibility of messages with this label in the message list
+								 * @enum {string}
+								 */
+								messageListVisibility?: "show" | "hide";
+								/**
+								 * @description Visibility of the label in the label list
+								 * @enum {string}
+								 */
+								labelListVisibility?:
+									| "labelShow"
+									| "labelShowIfUnread"
+									| "labelHide";
+								/**
+								 * @description Label type - system labels are built-in, user labels are custom
+								 * @example user
+								 * @enum {string}
+								 */
+								type: "system" | "user";
+								/** @description Total number of messages with this label */
+								messagesTotal?: number;
+								/** @description Number of unread messages with this label */
+								messagesUnread?: number;
+								/** @description Total number of threads with this label */
+								threadsTotal?: number;
+								/** @description Number of unread threads with this label */
+								threadsUnread?: number;
+								/** @description Label color settings (only for user labels) */
+								color?: {
+									/**
+									 * @description Text color as hex code
+									 * @example #000000
+									 */
+									textColor: string;
+									/**
+									 * @description Background color as hex code
+									 * @example #ffffff
+									 */
+									backgroundColor: string;
+								};
+							}[];
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No Gmail OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to fetch labels */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/messages": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * List Gmail messages
+		 * @description Lists messages in the user's mailbox with optional search query
+		 */
+		get: {
+			parameters: {
+				query?: {
+					/** @description Gmail search query (e.g., "from:example@gmail.com", "is:unread") */
+					q?: string;
+					/** @description Maximum number of messages to return */
+					maxResults?: number;
+					/** @description Page token for pagination */
+					pageToken?: string;
+				};
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Messages listed successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							messages: {
+								id: string;
+								threadId: string;
+							}[];
+							nextPageToken?: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No Gmail OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to list messages */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/messages/{messageId}": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get Gmail message
+		 * @description Returns a specific Gmail message by ID
+		 */
+		get: {
+			parameters: {
+				query?: {
+					/** @description The format to return the message in */
+					format?: "full" | "metadata" | "minimal";
+				};
+				header?: never;
+				path: {
+					/** @description Gmail message ID */
+					messageId: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Message retrieved successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							id: string;
+							threadId: string;
+							labelIds: string[];
+							snippet: string;
+							historyId: string;
+							internalDate: string;
+							payload?: {
+								partId: string;
+								mimeType: string;
+								filename?: string;
+								headers?: {
+									name: string;
+									value: string;
+								}[];
+								body?: {
+									attachmentId?: string;
+									size: number;
+									data?: string;
+								};
+								parts?: {
+									partId: string;
+									mimeType: string;
+									filename?: string;
+									headers?: {
+										name: string;
+										value: string;
+									}[];
+									body?: {
+										attachmentId?: string;
+										size: number;
+										data?: string;
+									};
+									parts?: unknown[];
+								}[];
+							};
+							sizeEstimate: number;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Message or OAuth token not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to fetch message */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/messages/{messageId}/attachments/{attachmentId}": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get message attachment
+		 * @description Returns the attachment data for a specific message
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description Gmail message ID */
+					messageId: string;
+					/** @description Attachment ID */
+					attachmentId: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Attachment retrieved successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							size: number;
+							/** @description Base64-encoded attachment data */
+							data: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Attachment or OAuth token not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to fetch attachment */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/history": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get mailbox history
+		 * @description Returns the history of changes to the mailbox since a given historyId
+		 */
+		get: {
+			parameters: {
+				query: {
+					/** @description History ID to start from */
+					startHistoryId: string;
+					/** @description Maximum number of history records to return */
+					maxResults?: number;
+				};
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description History retrieved successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							history: {
+								historyId: string;
+								messages?: {
+									id: string;
+									threadId: string;
+								}[];
+								messagesAdded?: {
+									message: {
+										id: string;
+										threadId: string;
+										labelIds: string[];
+										snippet: string;
+										historyId: string;
+										internalDate: string;
+										payload?: {
+											partId: string;
+											mimeType: string;
+											filename?: string;
+											headers?: {
+												name: string;
+												value: string;
+											}[];
+											body?: {
+												attachmentId?: string;
+												size: number;
+												data?: string;
+											};
+											parts?: {
+												partId: string;
+												mimeType: string;
+												filename?: string;
+												headers?: {
+													name: string;
+													value: string;
+												}[];
+												body?: {
+													attachmentId?: string;
+													size: number;
+													data?: string;
+												};
+												parts?: unknown[];
+											}[];
+										};
+										sizeEstimate: number;
+									};
+								}[];
+								messagesDeleted?: {
+									message: {
+										id: string;
+										threadId: string;
+									};
+								}[];
+								labelsAdded?: {
+									message: {
+										id: string;
+										threadId: string;
+									};
+									labelIds: string[];
+								}[];
+								labelsRemoved?: {
+									message: {
+										id: string;
+										threadId: string;
+									};
+									labelIds: string[];
+								}[];
+							}[];
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No Gmail OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to fetch history */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/watch": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Start watching Gmail
+		 * @description Sets up a Gmail push notification subscription via Pub/Sub
+		 */
+		post: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": {
+						/**
+						 * @description Google Cloud Pub/Sub topic name
+						 * @example projects/my-project/topics/gmail-notifications
+						 */
+						topicName?: string;
+						/**
+						 * @description Label IDs to watch (e.g., ["INBOX", "UNREAD"])
+						 * @example [
+						 *       "INBOX"
+						 *     ]
+						 */
+						labelIds?: string[];
+					};
+				};
+			};
+			responses: {
+				/** @description Watch started successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							historyId: string;
+							expiration: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No Gmail OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to start watch */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		/**
+		 * Stop watching Gmail
+		 * @description Stops the Gmail push notification subscription
+		 */
+		delete: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Watch stopped successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							success: boolean;
+							message?: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No Gmail OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to stop watch */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/gmail/watch/status": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get Gmail watch status
+		 * @description Checks if a Gmail watch exists by calling the watch API (idempotent). Returns current watch info including expiration.
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Watch status retrieved successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							hasWatch: boolean;
+							historyId?: string;
+							expiration?: string;
+							/** Format: date-time */
+							expiresAt?: string;
+							expiresInHours?: number;
+							isExpired?: boolean;
+							topicName?: string;
+							message?: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description No Gmail OAuth token found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Failed to get watch status */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/categories": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get all categories
+		 * @description Retrieve all categories (predefined + user custom)
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description List of categories */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							categories: {
+								id: string;
+								userId: string | null;
+								name: string;
+								icon: string | null;
+								isDefault: boolean;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+							}[];
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		/**
+		 * Create custom category
+		 * @description Create a new custom category for the user
+		 */
+		post: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": {
+						name: string;
+						icon?: string;
+					};
+				};
+			};
+			responses: {
+				/** @description Category created successfully */
+				201: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							category: {
+								id: string;
+								userId: string | null;
+								name: string;
+								icon: string | null;
+								isDefault: boolean;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+							};
+						};
+					};
+				};
+				/** @description Bad request */
+				400: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/categories/{id}": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get category by ID
+		 * @description Retrieve a specific category by its ID
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description Category ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Category details */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							category: {
+								id: string;
+								userId: string | null;
+								name: string;
+								icon: string | null;
+								isDefault: boolean;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+							};
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Category not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		/**
+		 * Delete custom category
+		 * @description Delete a custom category (cannot delete predefined categories)
+		 */
+		delete: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description Category ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Category deleted successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							message: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Category not found or cannot be deleted */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		options?: never;
+		head?: never;
+		/**
+		 * Update custom category
+		 * @description Update an existing custom category (cannot update predefined categories)
+		 */
+		patch: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description Category ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": {
+						name?: string;
+						icon?: string;
+					};
+				};
+			};
+			responses: {
+				/** @description Category updated successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							category: {
+								id: string;
+								userId: string | null;
+								name: string;
+								icon: string | null;
+								isDefault: boolean;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+							};
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Category not found or cannot be updated */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		trace?: never;
+	};
+	"/api/v1/transactions": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get all transactions
+		 * @description Retrieve all transactions for the authenticated user with optional filters
+		 */
+		get: {
+			parameters: {
+				query?: {
+					categoryId?: string;
+					type?: "debit" | "credit";
+					startDate?: string;
+					endDate?: string;
+					minAmount?: number | null;
+					maxAmount?: number | null;
+					limit?: number;
+					offset?: number | null;
+				};
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description List of transactions */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							transactions: {
+								id: string;
+								userId: string;
+								categoryId: string | null;
+								amount: string;
+								/** @enum {string} */
+								type: "debit" | "credit";
+								currency: string | null;
+								merchant: string | null;
+								accountNumber: string | null;
+								bankName: string | null;
+								/** Format: date-time */
+								transactionDate: string | null;
+								remarks: string | null;
+								emailId: string | null;
+								aiConfidence: string | null;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+								category: {
+									id: string;
+									name: string;
+									icon: string | null;
+								} | null;
+							}[];
+							total: number;
+							limit: number;
+							offset: number;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/transactions/summary": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get transaction summary
+		 * @description Get summary statistics (total debit, credit, count) for the user
+		 */
+		get: {
+			parameters: {
+				query?: {
+					startDate?: string;
+					endDate?: string;
+				};
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Transaction summary */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							summary: {
+								totalDebit: number;
+								totalCredit: number;
+								transactionCount: number;
+								netAmount: number;
+							};
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/transactions/{id}": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get transaction by ID
+		 * @description Retrieve a specific transaction by its ID
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description Transaction ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Transaction details */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							transaction: {
+								id: string;
+								userId: string;
+								categoryId: string | null;
+								amount: string;
+								/** @enum {string} */
+								type: "debit" | "credit";
+								currency: string | null;
+								merchant: string | null;
+								accountNumber: string | null;
+								bankName: string | null;
+								/** Format: date-time */
+								transactionDate: string | null;
+								remarks: string | null;
+								emailId: string | null;
+								aiConfidence: string | null;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+								category: {
+									id: string;
+									name: string;
+									icon: string | null;
+								} | null;
+							};
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Transaction not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		/**
+		 * Delete transaction
+		 * @description Delete a transaction by ID
+		 */
+		delete: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description Transaction ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description Transaction deleted successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							message: string;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Transaction not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		options?: never;
+		head?: never;
+		/**
+		 * Update transaction
+		 * @description Update transaction details (category, merchant, remarks)
+		 */
+		patch: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					/** @description Transaction ID */
+					id: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": {
+						categoryId?: string;
+						merchant?: string;
+						remarks?: string;
+						/** Format: date-time */
+						transactionDate?: string;
+					};
+				};
+			};
+			responses: {
+				/** @description Transaction updated successfully */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							transaction: {
+								id: string;
+								userId: string;
+								categoryId: string | null;
+								amount: string;
+								/** @enum {string} */
+								type: "debit" | "credit";
+								currency: string | null;
+								merchant: string | null;
+								accountNumber: string | null;
+								bankName: string | null;
+								/** Format: date-time */
+								transactionDate: string | null;
+								remarks: string | null;
+								emailId: string | null;
+								aiConfidence: string | null;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+								category: {
+									id: string;
+									name: string;
+									icon: string | null;
+								} | null;
+							};
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Transaction not found */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		trace?: never;
+	};
+	"/api/v1/health": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Health check
+		 * @description Check if the API v1 is healthy
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description API is healthy */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							status: string;
+							version: string;
+						};
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+	schemas: never;
+	responses: never;
+	parameters: never;
+	requestBodies: never;
+	headers: never;
+	pathItems: never;
 }
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

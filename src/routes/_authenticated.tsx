@@ -1,9 +1,10 @@
 import {
 	createFileRoute,
 	Outlet,
-	redirect,
 	useLocation,
+	useRouter,
 } from "@tanstack/react-router";
+import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
 	const { user, loading } = useAuth();
+	const router = useRouter();
 	const location = useLocation();
 
 	if (loading) {
@@ -23,7 +25,7 @@ function AuthenticatedLayout() {
 	}
 
 	if (!user) {
-		throw redirect({
+		router.navigate({
 			to: "/login",
 			search: {
 				redirect: location.pathname,
@@ -31,5 +33,12 @@ function AuthenticatedLayout() {
 		});
 	}
 
-	return <Outlet />;
+	return (
+		<div className="flex min-h-screen">
+			<Header />
+			<main className="flex-1 md:ml-64 lg:ml-72 pb-16 md:pb-0">
+				<Outlet />
+			</main>
+		</div>
+	);
 }

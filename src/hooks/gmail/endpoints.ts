@@ -14,8 +14,8 @@ export const GMAIL_ENDPOINTS = {
 	PROFILE: "/api/v1/gmail/profile",
 	MESSAGES: "/api/v1/gmail/messages",
 	MESSAGE: "/api/v1/gmail/messages/{messageId}",
-	ATTACHMENT:
-		"/api/v1/gmail/messages/{messageId}/attachments/{attachmentId}",
+	ATTACHMENT: "/api/v1/gmail/messages/{messageId}/attachments/{attachmentId}",
 	HISTORY: "/api/v1/gmail/history",
 	WATCH: "/api/v1/gmail/watch",
+	LABELS: "/api/v1/gmail/labels",
 } satisfies Record<string, keyof paths>;

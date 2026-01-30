@@ -33,7 +33,7 @@ function GoogleCallbackPage() {
 
 	useEffect(() => {
 		if (data?.success) {
-			navigate({ to: "/dashboard" });
+			navigate({ to: "/" });
 		}
 	}, [data, navigate]);
 
@@ -106,7 +106,7 @@ function GoogleCallbackPage() {
 				</CardHeader>
 				<CardContent>
 					<p className="text-sm text-muted-foreground">
-						Redirecting to dashboard...
+						Redirecting to home...
 					</p>
 				</CardContent>
 			</Card>
