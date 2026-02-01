@@ -1,16 +1,39 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { $api } from "@/lib/api-client";
-import { TRANSACTIONS_ENDPOINTS } from "./endpoints";
+import { isTransactionsQueryKey, TRANSACTIONS_ENDPOINTS } from "./endpoints";
+
+function transactionsInvalidateOnSuccess(
+	queryClient: ReturnType<typeof useQueryClient>,
+) {
+	return {
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				predicate: (query) => isTransactionsQueryKey(query.queryKey),
+			});
+		},
+	};
+}
 
 /**
  * Updates transaction details
  */
 export function useUpdateTransaction() {
-	return $api.useMutation("patch", TRANSACTIONS_ENDPOINTS.DETAIL);
+	const queryClient = useQueryClient();
+	return $api.useMutation(
+		"patch",
+		TRANSACTIONS_ENDPOINTS.DETAIL,
+		transactionsInvalidateOnSuccess(queryClient),
+	);
 }
 
 /**
  * Deletes a transaction by ID
  */
 export function useDeleteTransaction() {
-	return $api.useMutation("delete", TRANSACTIONS_ENDPOINTS.DETAIL);
+	const queryClient = useQueryClient();
+	return $api.useMutation(
+		"delete",
+		TRANSACTIONS_ENDPOINTS.DETAIL,
+		transactionsInvalidateOnSuccess(queryClient),
+	);
 }

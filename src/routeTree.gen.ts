@@ -16,6 +16,9 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedTransactionsRouteImport } from './routes/_authenticated/transactions'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedGoogleCallbackRouteImport } from './routes/_authenticated/google-callback'
+import { Route as AuthenticatedCategoriesRouteImport } from './routes/_authenticated/categories'
+import { Route as AuthenticatedTransactionsTransactionIdRouteImport } from './routes/_authenticated/transactions.$transactionId'
+import { Route as AuthenticatedCategoriesCategoryIdRouteImport } from './routes/_authenticated/categories.$categoryId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -53,32 +56,58 @@ const AuthenticatedGoogleCallbackRoute =
     path: '/google-callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCategoriesRoute = AuthenticatedCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTransactionsTransactionIdRoute =
+  AuthenticatedTransactionsTransactionIdRouteImport.update({
+    id: '/$transactionId',
+    path: '/$transactionId',
+    getParentRoute: () => AuthenticatedTransactionsRoute,
+  } as any)
+const AuthenticatedCategoriesCategoryIdRoute =
+  AuthenticatedCategoriesCategoryIdRouteImport.update({
+    id: '/$categoryId',
+    path: '/$categoryId',
+    getParentRoute: () => AuthenticatedCategoriesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/categories': typeof AuthenticatedCategoriesRouteWithChildren
   '/google-callback': typeof AuthenticatedGoogleCallbackRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/transactions': typeof AuthenticatedTransactionsRoute
+  '/transactions': typeof AuthenticatedTransactionsRouteWithChildren
+  '/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
+  '/transactions/$transactionId': typeof AuthenticatedTransactionsTransactionIdRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/categories': typeof AuthenticatedCategoriesRouteWithChildren
   '/google-callback': typeof AuthenticatedGoogleCallbackRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/transactions': typeof AuthenticatedTransactionsRoute
+  '/transactions': typeof AuthenticatedTransactionsRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
+  '/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
+  '/transactions/$transactionId': typeof AuthenticatedTransactionsTransactionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/categories': typeof AuthenticatedCategoriesRouteWithChildren
   '/_authenticated/google-callback': typeof AuthenticatedGoogleCallbackRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/transactions': typeof AuthenticatedTransactionsRoute
+  '/_authenticated/transactions': typeof AuthenticatedTransactionsRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
+  '/_authenticated/transactions/$transactionId': typeof AuthenticatedTransactionsTransactionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -86,26 +115,35 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/categories'
     | '/google-callback'
     | '/settings'
     | '/transactions'
+    | '/categories/$categoryId'
+    | '/transactions/$transactionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/signup'
+    | '/categories'
     | '/google-callback'
     | '/settings'
     | '/transactions'
     | '/'
+    | '/categories/$categoryId'
+    | '/transactions/$transactionId'
   id:
     | '__root__'
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/_authenticated/categories'
     | '/_authenticated/google-callback'
     | '/_authenticated/settings'
     | '/_authenticated/transactions'
     | '/_authenticated/'
+    | '/_authenticated/categories/$categoryId'
+    | '/_authenticated/transactions/$transactionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -165,20 +203,73 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGoogleCallbackRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/categories': {
+      id: '/_authenticated/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof AuthenticatedCategoriesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/transactions/$transactionId': {
+      id: '/_authenticated/transactions/$transactionId'
+      path: '/$transactionId'
+      fullPath: '/transactions/$transactionId'
+      preLoaderRoute: typeof AuthenticatedTransactionsTransactionIdRouteImport
+      parentRoute: typeof AuthenticatedTransactionsRoute
+    }
+    '/_authenticated/categories/$categoryId': {
+      id: '/_authenticated/categories/$categoryId'
+      path: '/$categoryId'
+      fullPath: '/categories/$categoryId'
+      preLoaderRoute: typeof AuthenticatedCategoriesCategoryIdRouteImport
+      parentRoute: typeof AuthenticatedCategoriesRoute
+    }
   }
 }
 
+interface AuthenticatedCategoriesRouteChildren {
+  AuthenticatedCategoriesCategoryIdRoute: typeof AuthenticatedCategoriesCategoryIdRoute
+}
+
+const AuthenticatedCategoriesRouteChildren: AuthenticatedCategoriesRouteChildren =
+  {
+    AuthenticatedCategoriesCategoryIdRoute:
+      AuthenticatedCategoriesCategoryIdRoute,
+  }
+
+const AuthenticatedCategoriesRouteWithChildren =
+  AuthenticatedCategoriesRoute._addFileChildren(
+    AuthenticatedCategoriesRouteChildren,
+  )
+
+interface AuthenticatedTransactionsRouteChildren {
+  AuthenticatedTransactionsTransactionIdRoute: typeof AuthenticatedTransactionsTransactionIdRoute
+}
+
+const AuthenticatedTransactionsRouteChildren: AuthenticatedTransactionsRouteChildren =
+  {
+    AuthenticatedTransactionsTransactionIdRoute:
+      AuthenticatedTransactionsTransactionIdRoute,
+  }
+
+const AuthenticatedTransactionsRouteWithChildren =
+  AuthenticatedTransactionsRoute._addFileChildren(
+    AuthenticatedTransactionsRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedCategoriesRoute: typeof AuthenticatedCategoriesRouteWithChildren
   AuthenticatedGoogleCallbackRoute: typeof AuthenticatedGoogleCallbackRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedTransactionsRoute: typeof AuthenticatedTransactionsRoute
+  AuthenticatedTransactionsRoute: typeof AuthenticatedTransactionsRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCategoriesRoute: AuthenticatedCategoriesRouteWithChildren,
   AuthenticatedGoogleCallbackRoute: AuthenticatedGoogleCallbackRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedTransactionsRoute: AuthenticatedTransactionsRoute,
+  AuthenticatedTransactionsRoute: AuthenticatedTransactionsRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 

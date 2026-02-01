@@ -1,5 +1,13 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { CreditCard, Home, LogOut, Menu, Settings, X } from "lucide-react";
+import {
+	CreditCard,
+	FolderTree,
+	Home,
+	LogOut,
+	Menu,
+	Settings,
+	X,
+} from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeSwitcher } from "./ThemeSwitcher";
@@ -11,6 +19,12 @@ const NAV_ITEMS = [
 		to: "/transactions",
 		icon: CreditCard,
 		label: "Transactions",
+		exact: false,
+	},
+	{
+		to: "/categories",
+		icon: FolderTree,
+		label: "Categories",
 		exact: false,
 	},
 	{ to: "/settings", icon: Settings, label: "Settings", exact: false },
@@ -47,20 +61,20 @@ export default function Header() {
 				</div>
 
 				{/* Navigation Links */}
-				<nav className="flex-1 p-4 space-y-4">
+				<nav className="flex-1 p-4 space-y-3">
 					{NAV_ITEMS.map((item) => {
 						const active = isActive(item.to, item.exact);
 						return (
 							<Link
 								key={item.to}
 								to={item.to}
-								className={`flex items-center gap-3 px-4 py-3 rounded-full font-medium text-lg transition-colors ${
+								className={`flex items-center gap-3 px-4 py-2 rounded-sm font-medium transition-colors ${
 									active
 										? "bg-primary text-primary-foreground"
 										: "hover:bg-accent text-foreground"
 								}`}
 							>
-								<item.icon className="h-6 w-6" />
+								<item.icon className="h-4 w-4" />
 								<span>{item.label}</span>
 							</Link>
 						);

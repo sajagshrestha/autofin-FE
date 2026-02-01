@@ -1,4 +1,4 @@
-import { CalendarDays } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -8,7 +8,7 @@ import {
 	ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export type DailySpendingDataPoint = {
+export type SpendingDataPoint = {
 	day: number;
 	label: string;
 	spending: number;
@@ -21,18 +21,32 @@ const lineChartConfig: ChartConfig = {
 	},
 };
 
-type DailySpendingLineChartProps = {
-	data: DailySpendingDataPoint[];
+type SpendingLineChartProps = {
+	data: SpendingDataPoint[];
+	/** Optional subtitle, e.g. period label from the date filter */
+	periodLabel?: string;
+	/** "month" for All time view; default "day" */
+	granularity?: "day" | "month";
 };
 
-export function DailySpendingLineChart({ data }: DailySpendingLineChartProps) {
+export function SpendingLineChart({
+	data,
+	periodLabel,
+	granularity = "day",
+}: SpendingLineChartProps) {
+	const perLabel = granularity === "month" ? "per month" : "per day";
+	const subtitle = periodLabel
+		? `Spending ${perLabel} · ${periodLabel}`
+		: `Spending ${perLabel}`;
+
 	return (
 		<Card className="hover:shadow-md transition-shadow">
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
-					<CalendarDays className="h-5 w-5" />
-					Spending This Month (per day)
+					<TrendingUp className="h-5 w-5" />
+					Spending
 				</CardTitle>
+				<p className="text-sm text-muted-foreground">{subtitle}</p>
 			</CardHeader>
 			<CardContent>
 				{data.length > 0 ? (
@@ -70,7 +84,7 @@ export function DailySpendingLineChart({ data }: DailySpendingLineChartProps) {
 					</ChartContainer>
 				) : (
 					<div className="h-[300px] flex items-center justify-center text-muted-foreground">
-						No daily spending data for this month
+						No spending data for this period
 					</div>
 				)}
 			</CardContent>

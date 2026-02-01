@@ -1,23 +1,28 @@
-import { createFileRoute } from "@tanstack/react-router";
-import {
-	ArrowDownRight,
-	ArrowUpRight,
-	Banknote,
-	CreditCard,
-} from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { eachDayOfInterval, eachMonthOfInterval, format } from "date-fns";
+import { ArrowDownRight, ArrowUpRight, CreditCard } from "lucide-react";
 import { useMemo } from "react";
 import {
 	BankBarChart,
 	CategoryBarChart,
 	CategoryPieChart,
-	DailySpendingLineChart,
 	MonthlyTrendsChart,
+	SpendingLineChart,
 } from "@/components/charts";
+import { DateFilter } from "@/components/DateFilter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetAllTransactions } from "@/hooks/transactions/queries";
+import {
+	dateFilterSearchSchema,
+	getDateRangeForApi,
+	getDefaultPeriodStart,
+	getPeriodBoundsFromParams,
+	getPeriodLabel,
+} from "@/lib/date-filter";
 
 export const Route = createFileRoute("/_authenticated/")({
+	validateSearch: dateFilterSearchSchema,
 	component: AnalyticsDashboard,
 });
 
@@ -36,7 +41,14 @@ const CHART_COLORS = [
 ];
 
 function AnalyticsDashboard() {
-	const { data: transactionsData, isLoading } = useGetAllTransactions();
+	const search = Route.useSearch();
+	const navigate = useNavigate();
+	const dateRangeParams = getDateRangeForApi(search);
+
+	const { data: transactionsData, isLoading } = useGetAllTransactions({
+		startDate: dateRangeParams.startDate,
+		endDate: dateRangeParams.endDate,
+	});
 
 	const transactions = useMemo(
 		() => transactionsData?.transactions || [],
@@ -50,7 +62,6 @@ function AnalyticsDashboard() {
 				totalExpenses: 0,
 				totalIncome: 0,
 				transactionCount: 0,
-				avgTransaction: 0,
 			};
 		}
 
@@ -70,10 +81,6 @@ function AnalyticsDashboard() {
 			totalExpenses,
 			totalIncome,
 			transactionCount: transactions.length,
-			avgTransaction:
-				transactions.length > 0
-					? (totalExpenses + totalIncome) / transactions.length
-					: 0,
 		};
 	}, [transactions]);
 
@@ -144,36 +151,56 @@ function AnalyticsDashboard() {
 			}));
 	}, [transactions]);
 
-	// Daily spending for current month (day 1 to end of month)
-	const dailySpendingData = useMemo(() => {
-		const now = new Date();
-		const year = now.getFullYear();
-		const month = now.getMonth();
-		const lastDay = new Date(year, month + 1, 0).getDate();
+	// Spending for the selected period (per day, or per month when "All time")
+	const spendingData = useMemo(() => {
+		const view = search.view ?? "monthly";
+		const { start, end } = getPeriodBoundsFromParams(search);
 
-		const dayMap = new Map<number, number>();
-		for (let d = 1; d <= lastDay; d++) {
-			dayMap.set(d, 0);
+		if (view === "all_time") {
+			const months = eachMonthOfInterval({ start, end });
+			const monthKeyToSpending = new Map<string, number>();
+			for (const m of months) {
+				monthKeyToSpending.set(format(m, "yyyy-MM"), 0);
+			}
+			transactions.forEach((t) => {
+				if (t.type === "credit") return;
+				const date = t.transactionDate
+					? new Date(t.transactionDate)
+					: new Date();
+				const key = format(date, "yyyy-MM");
+				if (!monthKeyToSpending.has(key)) return;
+				const amount = parseFloat(t.amount || "0");
+				monthKeyToSpending.set(
+					key,
+					(monthKeyToSpending.get(key) ?? 0) + amount,
+				);
+			});
+			return months.map((m, index) => ({
+				day: index + 1,
+				label: format(m, "MMM yyyy"),
+				spending: monthKeyToSpending.get(format(m, "yyyy-MM")) ?? 0,
+			}));
 		}
 
+		const days = eachDayOfInterval({ start, end });
+		const dayKeyToSpending = new Map<string, number>();
+		for (const d of days) {
+			dayKeyToSpending.set(format(d, "yyyy-MM-dd"), 0);
+		}
 		transactions.forEach((t) => {
+			if (t.type === "credit") return;
 			const date = t.transactionDate ? new Date(t.transactionDate) : new Date();
-			if (date.getFullYear() !== year || date.getMonth() !== month) return;
-			if (t.type === "credit") return; // expenses only
-			const day = date.getDate();
+			const key = format(date, "yyyy-MM-dd");
+			if (!dayKeyToSpending.has(key)) return;
 			const amount = parseFloat(t.amount || "0");
-			dayMap.set(day, (dayMap.get(day) ?? 0) + amount);
+			dayKeyToSpending.set(key, (dayKeyToSpending.get(key) ?? 0) + amount);
 		});
-
-		const monthLabel = now.toLocaleDateString("en-US", { month: "short" });
-		return Array.from(dayMap.entries())
-			.sort((a, b) => a[0] - b[0])
-			.map(([day, spending]) => ({
-				day,
-				label: `${monthLabel} ${day}`,
-				spending,
-			}));
-	}, [transactions]);
+		return days.map((d, index) => ({
+			day: index + 1,
+			label: format(d, "MMM d"),
+			spending: dayKeyToSpending.get(format(d, "yyyy-MM-dd")) ?? 0,
+		}));
+	}, [transactions, search]);
 
 	// Bank breakdown for bar chart
 	const bankData = useMemo(() => {
@@ -198,12 +225,7 @@ function AnalyticsDashboard() {
 	}, [transactions]);
 
 	const formatCurrency = (value: number) => {
-		return new Intl.NumberFormat("ne-NP", {
-			style: "currency",
-			currency: "NPR",
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
-		}).format(value);
+		return `Rs. ${value}`;
 	};
 
 	if (isLoading) {
@@ -217,8 +239,8 @@ function AnalyticsDashboard() {
 					</div>
 
 					{/* Summary cards skeleton */}
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-						{Array.from({ length: 4 }).map((_, i) => (
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+						{Array.from({ length: 3 }).map((_, i) => (
 							<Card key={i} className="hover:shadow-md transition-shadow">
 								<CardHeader className="flex flex-row items-center justify-between pb-2">
 									<Skeleton className="h-4 w-24" />
@@ -297,15 +319,23 @@ function AnalyticsDashboard() {
 		<div className="flex-1 p-4 md:p-8 space-y-8">
 			<div className="space-y-8">
 				{/* Header */}
-				<div>
-					<h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-					<p className="text-muted-foreground mt-1">
-						Overview of your spending patterns and transactions.
-					</p>
+				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+					<div>
+						<h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
+						<p className="text-muted-foreground mt-1">
+							Overview of your spending patterns and transactions.
+						</p>
+					</div>
+					<DateFilter
+						value={search}
+						onChange={(next) =>
+							navigate({ to: ".", search: { ...search, ...next } })
+						}
+					/>
 				</div>
 
 				{/* Summary Cards */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 					<Card className="hover:shadow-md transition-shadow">
 						<CardHeader className="flex flex-row items-center justify-between pb-2">
 							<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -348,25 +378,18 @@ function AnalyticsDashboard() {
 							<p className="text-xs text-muted-foreground">Total tracked</p>
 						</CardContent>
 					</Card>
-
-					<Card className="hover:shadow-md transition-shadow">
-						<CardHeader className="flex flex-row items-center justify-between pb-2">
-							<CardTitle className="text-sm font-medium text-muted-foreground">
-								Avg. Transaction
-							</CardTitle>
-							<Banknote className="h-4 w-4 text-purple-500" />
-						</CardHeader>
-						<CardContent>
-							<div className="text-2xl font-bold">
-								{formatCurrency(stats.avgTransaction)}
-							</div>
-							<p className="text-xs text-muted-foreground">Per transaction</p>
-						</CardContent>
-					</Card>
 				</div>
 
 				{/* Daily spending line chart - full width */}
-				<DailySpendingLineChart data={dailySpendingData} />
+				<SpendingLineChart
+					data={spendingData}
+					periodLabel={getPeriodLabel(
+						search.view ?? "monthly",
+						search.periodStart ??
+							getDefaultPeriodStart(search.view ?? "monthly"),
+					)}
+					granularity={search.view === "all_time" ? "month" : "day"}
+				/>
 
 				{/* Charts Row */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
