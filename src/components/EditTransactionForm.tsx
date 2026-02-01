@@ -103,12 +103,15 @@ export function EditTransactionForm({
 									value={field.state.value}
 									onValueChange={field.handleChange}
 								>
-									<SelectTrigger>
+									<SelectTrigger className="w-full">
 										<SelectValue placeholder="Select a category" />
 									</SelectTrigger>
 									<SelectContent>
 										{categories.map((category) => (
 											<SelectItem key={category.id} value={category.id}>
+												{category.icon && (
+													<span className="mr-1 shrink-0">{category.icon}</span>
+												)}
 												{category.name}
 											</SelectItem>
 										))}
