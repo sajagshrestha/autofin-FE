@@ -68,37 +68,36 @@ export function DateFilter({ value, onChange, className }: DateFilterProps) {
 			</Tabs>
 
 			<div className="flex items-center gap-1">
-				{!isAllTime && (
-					<Button
-						variant="outline"
-						size="icon"
-						className="h-9 w-9 shrink-0"
-						onClick={goPrevious}
-						aria-label="Previous period"
-					>
-						<ChevronLeft className="h-4 w-4" />
-					</Button>
-				)}
-				<span
+				<Button
+					variant="outline"
+					size="icon"
 					className={cn(
-						"min-w-[140px] max-w-[220px] truncate px-2 text-center text-sm font-medium tabular-nums",
-						isAllTime && "min-w-0",
+						"h-9 w-9 shrink-0",
+						isAllTime && "invisible pointer-events-none",
 					)}
+					onClick={goPrevious}
+					aria-label="Previous period"
+				>
+					<ChevronLeft className="h-4 w-4" />
+				</Button>
+				<span
+					className="w-[200px] shrink-0 truncate px-2 text-center text-sm font-medium tabular-nums"
 					title={label}
 				>
 					{label}
 				</span>
-				{!isAllTime && (
-					<Button
-						variant="outline"
-						size="icon"
-						className="h-9 w-9 shrink-0"
-						onClick={goNext}
-						aria-label="Next period"
-					>
-						<ChevronRight className="h-4 w-4" />
-					</Button>
-				)}
+				<Button
+					variant="outline"
+					size="icon"
+					className={cn(
+						"h-9 w-9 shrink-0",
+						isAllTime && "invisible pointer-events-none",
+					)}
+					onClick={goNext}
+					aria-label="Next period"
+				>
+					<ChevronRight className="h-4 w-4" />
+				</Button>
 			</div>
 		</div>
 	);
