@@ -21,6 +21,7 @@ import {
 	ArrowUp,
 	ArrowUpDown,
 	Eye,
+	MessageSquarePlus,
 	MoreVertical,
 	Pencil,
 	Search,
@@ -28,6 +29,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { CreateTransactionFromSmsForm } from "@/components/CreateTransactionFromSmsForm";
 import { DateFilter } from "@/components/DateFilter";
 import { EditTransactionForm } from "@/components/EditTransactionForm";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +61,7 @@ import {
 import type { Transaction } from "@/hooks";
 import { useGetAllCategories } from "@/hooks/categories/queries";
 import {
+	useCreateTransactionFromSms,
 	useDeleteTransaction,
 	useUpdateTransaction,
 } from "@/hooks/transactions/mutations";
@@ -77,6 +80,7 @@ function TransactionsPage() {
 		useState<Transaction | null>(null);
 	const [deletingTransaction, setDeletingTransaction] =
 		useState<Transaction | null>(null);
+	const [smsDialogOpen, setSmsDialogOpen] = useState(false);
 
 	const search = Route.useSearch();
 	const navigate = useNavigate();
@@ -93,6 +97,7 @@ function TransactionsPage() {
 
 	const updateMutation = useUpdateTransaction();
 	const deleteMutation = useDeleteTransaction();
+	const createFromSmsMutation = useCreateTransactionFromSms();
 
 	const transactions = (transactionsData?.transactions as Transaction[]) || [];
 	const categories = categoriesData?.categories || [];
@@ -316,6 +321,14 @@ function TransactionsPage() {
 					</div>
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-wrap items-center justify-end gap-2">
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => setSmsDialogOpen(true)}
+							>
+								<MessageSquarePlus className="mr-2 h-4 w-4" />
+								Create from SMS
+							</Button>
 							<div className="relative">
 								<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 								<Input
@@ -448,6 +461,31 @@ function TransactionsPage() {
 							onCancel={() => setEditingTransaction(null)}
 						/>
 					)}
+
+					{/* Create from SMS Dialog */}
+					<CreateTransactionFromSmsForm
+						key={String(smsDialogOpen)}
+						open={smsDialogOpen}
+						onOpenChange={setSmsDialogOpen}
+						onSubmit={(body) => {
+							createFromSmsMutation.mutate(
+								{ body },
+								{
+									onSuccess: () => {
+										toast.success("Transaction created from SMS");
+										setSmsDialogOpen(false);
+									},
+									onError: (error) => {
+										toast.error("Failed to create transaction", {
+											description: error.message,
+										});
+									},
+								},
+							);
+						}}
+						isPending={createFromSmsMutation.isPending}
+						onCancel={() => setSmsDialogOpen(false)}
+					/>
 
 					{/* Delete Confirmation */}
 					<Dialog

@@ -37,3 +37,15 @@ export function useDeleteTransaction() {
 		transactionsInvalidateOnSuccess(queryClient),
 	);
 }
+
+/**
+ * Creates a transaction from an SMS message using AI extraction
+ */
+export function useCreateTransactionFromSms() {
+	const queryClient = useQueryClient();
+	return $api.useMutation(
+		"post",
+		TRANSACTIONS_ENDPOINTS.CREATE_FROM_SMS,
+		transactionsInvalidateOnSuccess(queryClient),
+	);
+}

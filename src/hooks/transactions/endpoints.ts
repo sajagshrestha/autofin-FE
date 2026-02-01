@@ -4,6 +4,7 @@ export const TRANSACTIONS_ENDPOINTS = {
 	LIST: "/api/v1/transactions",
 	SUMMARY: "/api/v1/transactions/summary",
 	DETAIL: "/api/v1/transactions/{id}",
+	CREATE_FROM_SMS: "/api/v1/transactions/sms",
 } satisfies Record<string, keyof paths>;
 
 /** Path prefix for all transaction endpoints (used for query key matching) */

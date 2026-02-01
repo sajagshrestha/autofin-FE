@@ -2113,7 +2113,210 @@ export interface paths {
 			};
 		};
 		put?: never;
-		post?: never;
+		/**
+		 * Create manual transaction
+		 * @description Create a new transaction manually
+		 */
+		post: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": {
+						amount: number;
+						/** @enum {string} */
+						type: "debit" | "credit";
+						categoryId?: string;
+						merchant?: string;
+						remarks?: string;
+						/** Format: date-time */
+						transactionDate?: string;
+					};
+				};
+			};
+			responses: {
+				/** @description Transaction created successfully */
+				201: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							transaction: {
+								id: string;
+								userId: string;
+								categoryId: string | null;
+								amount: string;
+								/** @enum {string} */
+								type: "debit" | "credit";
+								currency: string | null;
+								merchant: string | null;
+								accountNumber: string | null;
+								bankName: string | null;
+								/** Format: date-time */
+								transactionDate: string | null;
+								remarks: string | null;
+								emailId: string | null;
+								aiConfidence: string | null;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+								category: {
+									id: string;
+									name: string;
+									icon: string | null;
+								} | null;
+							};
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Internal server error */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/v1/transactions/sms": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Create transaction from SMS
+		 * @description Extract and create a transaction from an SMS message using AI
+		 */
+		post: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": {
+						smsBody: string;
+						sender?: string;
+					};
+				};
+			};
+			responses: {
+				/** @description Transaction created successfully from SMS */
+				201: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							transaction: {
+								id: string;
+								userId: string;
+								categoryId: string | null;
+								amount: string;
+								/** @enum {string} */
+								type: "debit" | "credit";
+								currency: string | null;
+								merchant: string | null;
+								accountNumber: string | null;
+								bankName: string | null;
+								/** Format: date-time */
+								transactionDate: string | null;
+								remarks: string | null;
+								emailId: string | null;
+								aiConfidence: string | null;
+								isAiCreated: boolean;
+								/** Format: date-time */
+								createdAt: string;
+								/** Format: date-time */
+								updatedAt: string;
+								category: {
+									id: string;
+									name: string;
+									icon: string | null;
+								} | null;
+							};
+						};
+					};
+				};
+				/** @description Not a transaction or extraction failed */
+				400: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Unauthorized */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+				/** @description Internal server error */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							error: string;
+							message?: string;
+							details?: unknown;
+						};
+					};
+				};
+			};
+		};
 		delete?: never;
 		options?: never;
 		head?: never;
