@@ -1,6 +1,12 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import {
 	DATE_VIEW_LABELS,
 	type DateFilterSearchParams,
@@ -53,19 +59,18 @@ export function DateFilter({ value, onChange, className }: DateFilterProps) {
 				className,
 			)}
 		>
-			<Tabs
-				value={view}
-				onValueChange={handleViewChange}
-				className="w-full sm:w-auto"
-			>
-				<TabsList className="grid w-full grid-cols-6 sm:inline-flex sm:w-auto">
+			<Select value={view} onValueChange={handleViewChange}>
+				<SelectTrigger className="w-full sm:w-[150px]">
+					<SelectValue />
+				</SelectTrigger>
+				<SelectContent>
 					{(Object.keys(DATE_VIEW_LABELS) as DateView[]).map((v) => (
-						<TabsTrigger key={v} value={v} className="text-xs sm:text-sm">
+						<SelectItem key={v} value={v}>
 							{DATE_VIEW_LABELS[v]}
-						</TabsTrigger>
+						</SelectItem>
 					))}
-				</TabsList>
-			</Tabs>
+				</SelectContent>
+			</Select>
 
 			<div className="flex items-center gap-1">
 				<Button

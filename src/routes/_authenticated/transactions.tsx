@@ -138,24 +138,30 @@ function TransactionsPage() {
 		},
 		{
 			accessorKey: "category",
-			header: "Category",
+			header: () => <span className="hidden md:table-cell">Category</span>,
 			cell: ({ row }) => {
 				const category = row.original.category;
-				return category ? (
-					<Badge variant="secondary" className="font-normal">
-						{category.icon && <span className="mr-1">{category.icon}</span>}
-						{category.name}
-					</Badge>
-				) : (
-					<span className="text-muted-foreground italic">Uncategorized</span>
+				return (
+					<div className="hidden md:flex">
+						{category ? (
+							<Badge variant="secondary" className="font-normal">
+								{category.icon && <span className="mr-1">{category.icon}</span>}
+								{category.name}
+							</Badge>
+						) : (
+							<span className="text-muted-foreground italic">
+								Uncategorized
+							</span>
+						)}
+					</div>
 				);
 			},
 		},
 		{
 			accessorKey: "bankName",
-			header: "Bank",
+			header: () => <span className="hidden lg:table-cell">Bank</span>,
 			cell: ({ row }) => (
-				<div className="text-sm">
+				<div className="hidden lg:block text-sm">
 					{row.getValue("bankName") || (
 						<span className="text-muted-foreground">-</span>
 					)}
@@ -164,12 +170,12 @@ function TransactionsPage() {
 		},
 		{
 			accessorKey: "remarks",
-			header: "Remarks",
+			header: () => <span className="hidden xl:table-cell">Remarks</span>,
 			cell: ({ row }) => {
 				const remarks = row.getValue("remarks") as string | null;
 				return (
 					<div
-						className="text-sm max-w-[200px] truncate"
+						className="hidden xl:block text-sm max-w-[200px] truncate"
 						title={remarks || undefined}
 					>
 						{remarks || <span className="text-muted-foreground">-</span>}
