@@ -1,4 +1,4 @@
-const NPR_LOCALE = "ne-NP";
+const NPR_LOCALE = "en";
 const DEFAULT_CURRENCY = "NPR";
 
 const nprFormatter = new Intl.NumberFormat(NPR_LOCALE, {
