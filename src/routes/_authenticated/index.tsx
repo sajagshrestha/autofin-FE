@@ -54,18 +54,18 @@ export const Route = createFileRoute("/_authenticated/")({
 	component: AnalyticsDashboard,
 });
 
-// Chart colors
+// Chart colors – diverse hues for clear distinction
 const CHART_COLORS = [
-	"var(--chart-1)",
-	"var(--chart-2)",
-	"var(--chart-3)",
-	"var(--chart-4)",
-	"var(--chart-5)",
-	"hsl(221, 83%, 53%)",
-	"hsl(142, 71%, 45%)",
-	"hsl(38, 92%, 50%)",
-	"hsl(0, 84%, 60%)",
-	"hsl(280, 65%, 60%)",
+	"hsl(221, 78%, 52%)", // blue
+	"hsl(142, 65%, 45%)", // green
+	"hsl(38, 92%, 50%)", // amber
+	"hsl(0, 72%, 55%)", // red
+	"hsl(280, 62%, 55%)", // violet
+	"hsl(185, 70%, 42%)", // teal
+	"hsl(25, 85%, 55%)", // orange
+	"hsl(320, 65%, 55%)", // pink
+	"hsl(85, 55%, 45%)", // lime
+	"hsl(250, 60%, 55%)", // indigo
 ];
 
 function AnalyticsDashboard() {
@@ -183,6 +183,7 @@ function AnalyticsDashboard() {
 		>();
 
 		transactions.forEach((t) => {
+			if (t.type === "credit") return;
 			const categoryName = t.category?.name || "Uncategorized";
 			const categoryIcon = t.category?.icon || null;
 			const amount = parseFloat(t.amount || "0");
@@ -333,6 +334,7 @@ function AnalyticsDashboard() {
 		const bankMap = new Map<string, number>();
 
 		transactions.forEach((t) => {
+			if (t.type === "credit") return;
 			const bankName = t.bankName || "Unknown Bank";
 			const amount = parseFloat(t.amount || "0");
 			const existing = bankMap.get(bankName) || 0;
