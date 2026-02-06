@@ -20,7 +20,7 @@ type CategoryPieChartProps = {
 
 export function CategoryPieChart({ data }: CategoryPieChartProps) {
 	return (
-		<Card className="hover:shadow-md transition-shadow">
+		<Card className="hover:shadow-md transition-shadow min-w-0 overflow-hidden">
 			<CardHeader>
 				<CardTitle>Spending by Category</CardTitle>
 			</CardHeader>
@@ -29,7 +29,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
 					<div className="flex flex-col md:flex-row items-center gap-4">
 						<ChartContainer
 							config={{}}
-							className="h-[250px] w-[250px] aspect-square"
+							className="h-[250px] w-full max-w-[250px] aspect-square mx-auto"
 						>
 							<PieChart>
 								<ChartTooltip

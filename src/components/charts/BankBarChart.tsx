@@ -6,6 +6,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
+import { formatCurrencyShort } from "@/lib/formatCurrency";
 
 export type BankBarDataPoint = {
 	name: string;
@@ -25,7 +26,7 @@ type BankBarChartProps = {
 
 export function BankBarChart({ data }: BankBarChartProps) {
 	return (
-		<Card className="hover:shadow-md transition-shadow">
+		<Card className="hover:shadow-md transition-shadow min-w-0 overflow-hidden">
 			<CardHeader>
 				<CardTitle>Spending by Bank</CardTitle>
 			</CardHeader>
@@ -43,14 +44,14 @@ export function BankBarChart({ data }: BankBarChartProps) {
 								type="number"
 								tickLine={false}
 								axisLine={false}
-								tickFormatter={(value) => `Rs. ${value / 1000}k`}
+								tickFormatter={(value) => formatCurrencyShort(value)}
 							/>
 							<YAxis
 								type="category"
 								dataKey="name"
 								tickLine={false}
 								axisLine={false}
-								width={100}
+								width={80}
 							/>
 							<ChartTooltip content={<ChartTooltipContent />} />
 							<Bar

@@ -1,7 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { eachMonthOfInterval, format } from "date-fns";
-import { ArrowDownRight, ArrowUpRight, CreditCard } from "lucide-react";
-import { useMemo } from "react";
+import {
+	eachDayOfInterval,
+	eachMonthOfInterval,
+	eachWeekOfInterval,
+	format,
+	startOfWeek,
+} from "date-fns";
+import {
+	ArrowDownRight,
+	ArrowUpRight,
+	CreditCard,
+	PiggyBank,
+} from "lucide-react";
+import { useCallback, useMemo } from "react";
+import { z } from "zod";
 import {
 	BankBarChart,
 	CategoryBarChart,
@@ -10,9 +22,35 @@ import {
 	SpendingLineChart,
 } from "@/components/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	DateFilter,
+	type DatePeriod,
+	type DateRange,
+	getDateRangeForPeriod,
+} from "@/components/ui/date-filter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetAllTransactions } from "@/hooks/transactions/queries";
+import { formatCurrency } from "@/lib/formatCurrency";
+
+const defaultRange = getDateRangeForPeriod("monthly");
+
+const searchParamsSchema = z.object({
+	period: z
+		.enum(["daily", "weekly", "monthly", "yearly", "all"])
+		.optional()
+		.default("monthly"),
+	startDate: z
+		.string()
+		.optional()
+		.default(defaultRange.startDate ?? ""),
+	endDate: z
+		.string()
+		.optional()
+		.default(defaultRange.endDate ?? ""),
+});
+
 export const Route = createFileRoute("/_authenticated/")({
+	validateSearch: searchParamsSchema,
 	component: AnalyticsDashboard,
 });
 
@@ -31,7 +69,40 @@ const CHART_COLORS = [
 ];
 
 function AnalyticsDashboard() {
-	const { data: transactionsData, isLoading } = useGetAllTransactions({});
+	const { period, startDate, endDate } = Route.useSearch();
+	const navigate = Route.useNavigate();
+
+	const { data: transactionsData, isLoading } = useGetAllTransactions({
+		startDate,
+		endDate,
+	});
+
+	const handlePeriodChange = useCallback(
+		(newPeriod: DatePeriod) => {
+			const range = getDateRangeForPeriod(newPeriod);
+			navigate({
+				search: {
+					period: newPeriod,
+					startDate: range.startDate,
+					endDate: range.endDate,
+				},
+			});
+		},
+		[navigate],
+	);
+
+	const handleDateRangeChange = useCallback(
+		(range: DateRange) => {
+			navigate({
+				search: (prev) => ({
+					...prev,
+					startDate: range.startDate,
+					endDate: range.endDate,
+				}),
+			});
+		},
+		[navigate],
+	);
 
 	const transactions = useMemo(
 		() => transactionsData?.transactions || [],
@@ -44,6 +115,7 @@ function AnalyticsDashboard() {
 			return {
 				totalExpenses: 0,
 				totalIncome: 0,
+				savings: 0,
 				transactionCount: 0,
 			};
 		}
@@ -63,6 +135,7 @@ function AnalyticsDashboard() {
 		return {
 			totalExpenses,
 			totalIncome,
+			savings: totalIncome - totalExpenses,
 			transactionCount: transactions.length,
 		};
 	}, [transactions]);
@@ -134,38 +207,124 @@ function AnalyticsDashboard() {
 			}));
 	}, [transactions]);
 
-	// Spending data grouped by month
+	// Spending data for line chart: buckets based on date filter (period + start/end)
 	const spendingData = useMemo(() => {
-		if (!transactions.length) return [];
+		const rangeStart =
+			startDate && startDate !== "" ? new Date(startDate) : null;
+		const rangeEnd = endDate && endDate !== "" ? new Date(endDate) : null;
+		const hasRange =
+			rangeStart &&
+			rangeEnd &&
+			period !== "all" &&
+			Number.isFinite(rangeStart.getTime()) &&
+			Number.isFinite(rangeEnd.getTime());
 
-		const dates = transactions
-			.map((t) => (t.transactionDate ? new Date(t.transactionDate) : null))
-			.filter((d): d is Date => d !== null);
+		let buckets: { key: string; date: Date; label: string }[] = [];
 
-		if (!dates.length) return [];
+		if (hasRange && rangeStart && rangeEnd) {
+			const interval = { start: rangeStart, end: rangeEnd };
+			switch (period) {
+				case "daily":
+					buckets = eachDayOfInterval(interval).map((d) => ({
+						key: format(d, "yyyy-MM-dd"),
+						date: d,
+						label: format(d, "MMM d"),
+					}));
+					break;
+				case "weekly":
+					buckets = eachWeekOfInterval(interval, {
+						weekStartsOn: 1,
+					}).map((d) => ({
+						key: format(d, "yyyy-'W'ww"),
+						date: d,
+						label: format(d, "MMM d"),
+					}));
+					break;
+				case "monthly":
+					buckets = eachDayOfInterval(interval).map((d) => ({
+						key: format(d, "yyyy-MM-dd"),
+						date: d,
+						label: format(d, "MMM d"),
+					}));
+					break;
+				case "yearly":
+					buckets = eachMonthOfInterval(interval).map((m) => ({
+						key: format(m, "yyyy-MM"),
+						date: m,
+						label: format(m, "MMM"),
+					}));
+					break;
+				default:
+					buckets = eachMonthOfInterval(interval).map((m) => ({
+						key: format(m, "yyyy-MM"),
+						date: m,
+						label: format(m, "MMM yyyy"),
+					}));
+			}
+		} else {
+			// All time: derive range from transaction dates
+			if (!transactions.length) return [];
+			const dates = transactions
+				.map((t) => (t.transactionDate ? new Date(t.transactionDate) : null))
+				.filter((d): d is Date => d !== null);
+			if (!dates.length) return [];
+			const minDate = new Date(Math.min(...dates.map((d) => d.getTime())));
+			const maxDate = new Date(Math.max(...dates.map((d) => d.getTime())));
+			const months = eachMonthOfInterval({ start: minDate, end: maxDate });
+			buckets = months.map((m) => ({
+				key: format(m, "yyyy-MM"),
+				date: m,
+				label: format(m, "MMM yyyy"),
+			}));
+		}
 
-		const minDate = new Date(Math.min(...dates.map((d) => d.getTime())));
-		const maxDate = new Date(Math.max(...dates.map((d) => d.getTime())));
-
-		const months = eachMonthOfInterval({ start: minDate, end: maxDate });
-		const monthKeyToSpending = new Map<string, number>();
-		for (const m of months) {
-			monthKeyToSpending.set(format(m, "yyyy-MM"), 0);
+		const keyToSpending = new Map<string, number>();
+		for (const b of buckets) {
+			keyToSpending.set(b.key, 0);
 		}
 		transactions.forEach((t) => {
 			if (t.type === "credit") return;
 			const date = t.transactionDate ? new Date(t.transactionDate) : new Date();
-			const key = format(date, "yyyy-MM");
-			if (!monthKeyToSpending.has(key)) return;
+			let key: string;
+			if (period === "daily" || period === "monthly")
+				key = format(date, "yyyy-MM-dd");
+			else if (period === "weekly")
+				key = format(startOfWeek(date, { weekStartsOn: 1 }), "yyyy-'W'ww");
+			else key = format(date, "yyyy-MM");
+			if (!keyToSpending.has(key)) return;
 			const amount = parseFloat(t.amount || "0");
-			monthKeyToSpending.set(key, (monthKeyToSpending.get(key) ?? 0) + amount);
+			keyToSpending.set(key, (keyToSpending.get(key) ?? 0) + amount);
 		});
-		return months.map((m, index) => ({
+		return buckets.map((b, index) => ({
 			day: index + 1,
-			label: format(m, "MMM yyyy"),
-			spending: monthKeyToSpending.get(format(m, "yyyy-MM")) ?? 0,
+			label: b.label,
+			spending: keyToSpending.get(b.key) ?? 0,
 		}));
-	}, [transactions]);
+	}, [transactions, period, startDate, endDate]);
+
+	// Chart subtitle and granularity from date filter
+	const { chartPeriodLabel, chartGranularity } = useMemo(() => {
+		if (period === "all" || !startDate || !endDate) {
+			return {
+				chartPeriodLabel: "All time",
+				chartGranularity: "month" as const,
+			};
+		}
+		const start = new Date(startDate);
+		const end = new Date(endDate);
+		const formatRange = () => {
+			if (period === "daily") return format(start, "MMM d, yyyy");
+			if (period === "monthly") return format(start, "MMMM yyyy");
+			if (period === "yearly") return format(start, "yyyy");
+			return format(start, "MMM d") + " - " + format(end, "MMM d, yyyy");
+		};
+		const label = formatRange();
+		const granularity =
+			period === "daily" || period === "monthly"
+				? ("day" as const)
+				: ("month" as const);
+		return { chartPeriodLabel: label, chartGranularity: granularity };
+	}, [period, startDate, endDate]);
 
 	// Bank breakdown for bar chart
 	const bankData = useMemo(() => {
@@ -189,13 +348,9 @@ function AnalyticsDashboard() {
 			}));
 	}, [transactions]);
 
-	const formatCurrency = (value: number) => {
-		return `Rs. ${value}`;
-	};
-
 	return (
-		<div className="flex-1 p-4 md:p-8 space-y-8">
-			<div className="space-y-8">
+		<div className="flex-1 p-4 md:p-8 space-y-8 min-w-0 overflow-hidden">
+			<div className="space-y-8 min-w-0">
 				{/* Header - always visible */}
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 					<div>
@@ -204,13 +359,20 @@ function AnalyticsDashboard() {
 							Overview of your spending patterns and transactions.
 						</p>
 					</div>
+					<DateFilter
+						period={period}
+						startDate={startDate}
+						endDate={endDate}
+						onPeriodChange={handlePeriodChange}
+						onDateRangeChange={handleDateRangeChange}
+					/>
 				</div>
 
 				{isLoading ? (
 					<>
 						{/* Summary cards skeleton */}
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-							{Array.from({ length: 3 }).map((_, i) => (
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+							{Array.from({ length: 4 }).map((_, i) => (
 								<Card key={i} className="hover:shadow-md transition-shadow">
 									<CardHeader className="flex flex-row items-center justify-between pb-2">
 										<Skeleton className="h-4 w-24" />
@@ -284,7 +446,7 @@ function AnalyticsDashboard() {
 				) : (
 					<>
 						{/* Summary Cards */}
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 							<Card className="hover:shadow-md transition-shadow">
 								<CardHeader className="flex flex-row items-center justify-between pb-2">
 									<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -322,6 +484,27 @@ function AnalyticsDashboard() {
 							<Card className="hover:shadow-md transition-shadow">
 								<CardHeader className="flex flex-row items-center justify-between pb-2">
 									<CardTitle className="text-sm font-medium text-muted-foreground">
+										Savings
+									</CardTitle>
+									<PiggyBank
+										className={`h-4 w-4 ${stats.savings >= 0 ? "text-emerald-500" : "text-red-500"}`}
+									/>
+								</CardHeader>
+								<CardContent>
+									<div
+										className={`text-2xl font-bold ${stats.savings >= 0 ? "text-emerald-600" : "text-red-600"}`}
+									>
+										{formatCurrency(stats.savings)}
+									</div>
+									<p className="text-xs text-muted-foreground">
+										{stats.savings >= 0 ? "Net positive" : "Net negative"}
+									</p>
+								</CardContent>
+							</Card>
+
+							<Card className="hover:shadow-md transition-shadow">
+								<CardHeader className="flex flex-row items-center justify-between pb-2">
+									<CardTitle className="text-sm font-medium text-muted-foreground">
 										Transactions
 									</CardTitle>
 									<CreditCard className="h-4 w-4 text-blue-500" />
@@ -338,8 +521,8 @@ function AnalyticsDashboard() {
 						{/* Daily spending line chart - full width */}
 						<SpendingLineChart
 							data={spendingData}
-							periodLabel="All Transactions"
-							granularity="month"
+							periodLabel={chartPeriodLabel}
+							granularity={chartGranularity}
 						/>
 
 						{/* Charts Row */}

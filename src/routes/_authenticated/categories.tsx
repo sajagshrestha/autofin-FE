@@ -4,32 +4,19 @@ import {
 	Outlet,
 	useRouterState,
 } from "@tanstack/react-router";
-import {
-	type ColumnDef,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getSortedRowModel,
-	type SortingState,
-	useReactTable,
+import type {
+	ColumnDef,
+	PaginationState,
+	SortingState,
 } from "@tanstack/react-table";
 import { format } from "date-fns";
-import {
-	ArrowDown,
-	ArrowUp,
-	ArrowUpDown,
-	Eye,
-	MoreVertical,
-	Pencil,
-	Plus,
-	Search,
-	Trash2,
-} from "lucide-react";
+import { Eye, MoreVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CategoryForm, type CategoryFormBody } from "@/components/CategoryForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
 import {
 	Dialog,
 	DialogContent,
@@ -45,15 +32,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
 import type { Category } from "@/hooks";
 import {
 	useCreateCategory,
@@ -69,6 +47,10 @@ export const Route = createFileRoute("/_authenticated/categories")({
 function CategoriesPage() {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [globalFilter, setGlobalFilter] = useState("");
+	const [pagination, setPagination] = useState<PaginationState>({
+		pageIndex: 0,
+		pageSize: 10,
+	});
 	const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 	const [deletingCategory, setDeletingCategory] = useState<Category | null>(
 		null,
@@ -88,21 +70,7 @@ function CategoriesPage() {
 	const columns: ColumnDef<Category>[] = [
 		{
 			accessorKey: "name",
-			header: ({ column }) => (
-				<Button
-					variant="ghost"
-					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-				>
-					Name
-					{column.getIsSorted() === "asc" ? (
-						<ArrowUp className="ml-2 h-4 w-4" />
-					) : column.getIsSorted() === "desc" ? (
-						<ArrowDown className="ml-2 h-4 w-4" />
-					) : (
-						<ArrowUpDown className="ml-2 h-4 w-4" />
-					)}
-				</Button>
-			),
+			header: "Name",
 			cell: ({ row }) => (
 				<div className="flex items-center gap-2 font-medium">
 					{row.original.icon && (
@@ -136,21 +104,7 @@ function CategoriesPage() {
 		},
 		{
 			accessorKey: "createdAt",
-			header: ({ column }) => (
-				<Button
-					variant="ghost"
-					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-				>
-					Created
-					{column.getIsSorted() === "asc" ? (
-						<ArrowUp className="ml-2 h-4 w-4" />
-					) : column.getIsSorted() === "desc" ? (
-						<ArrowDown className="ml-2 h-4 w-4" />
-					) : (
-						<ArrowUpDown className="ml-2 h-4 w-4" />
-					)}
-				</Button>
-			),
+			header: "Created",
 			cell: ({ row }) =>
 				format(new Date(row.getValue("createdAt") as string), "PPP"),
 		},
@@ -210,20 +164,6 @@ function CategoriesPage() {
 			},
 		},
 	];
-
-	const table = useReactTable({
-		data: categories,
-		columns,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		onSortingChange: setSorting,
-		onGlobalFilterChange: setGlobalFilter,
-		state: {
-			sorting,
-			globalFilter,
-		},
-	});
 
 	const handleCreate = (body: CategoryFormBody) => {
 		createMutation.mutate(
@@ -286,7 +226,7 @@ function CategoriesPage() {
 	return (
 		<>
 			{isListPage && (
-				<div className="flex-1 p-4 md:p-8 max-w-6xl mx-auto space-y-8">
+				<div className="flex-1 p-4 md:p-8 max-w-6xl mx-auto space-y-8 min-w-0 overflow-hidden">
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 							<div>
@@ -304,67 +244,32 @@ function CategoriesPage() {
 							</Button>
 						</div>
 					</div>
-					<div className="flex flex-col gap-4">
-						<div className="flex flex-wrap items-center justify-end gap-2">
-							<div className="relative">
-								<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-								<Input
-									placeholder="Search categories..."
-									value={globalFilter ?? ""}
-									onChange={(e) => setGlobalFilter(e.target.value)}
-									className="pl-8 w-full md:w-[300px]"
-								/>
-							</div>
-						</div>
-						<div className="rounded-md border bg-card">
-							<Table>
-								<TableHeader>
-									{table.getHeaderGroups().map((headerGroup) => (
-										<TableRow key={headerGroup.id}>
-											{headerGroup.headers.map((header) => (
-												<TableHead key={header.id}>
-													{header.isPlaceholder
-														? null
-														: flexRender(
-																header.column.columnDef.header,
-																header.getContext(),
-															)}
-												</TableHead>
-											))}
-										</TableRow>
-									))}
-								</TableHeader>
-								<TableBody>
-									{table.getRowModel().rows?.length ? (
-										table.getRowModel().rows.map((row) => (
-											<TableRow
-												key={row.id}
-												className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-											>
-												{row.getVisibleCells().map((cell) => (
-													<TableCell key={cell.id}>
-														{flexRender(
-															cell.column.columnDef.cell,
-															cell.getContext(),
-														)}
-													</TableCell>
-												))}
-											</TableRow>
-										))
-									) : (
-										<TableRow>
-											<TableCell
-												colSpan={columns.length}
-												className="h-24 text-center"
-											>
-												{isLoading ? "Loading categories..." : "No categories."}
-											</TableCell>
-										</TableRow>
-									)}
-								</TableBody>
-							</Table>
-						</div>
-					</div>
+					<DataTable
+						columns={columns}
+						data={categories}
+						isLoading={isLoading}
+						sorting={{
+							state: sorting,
+							onSortingChange: setSorting,
+						}}
+						pagination={{
+							state: pagination,
+							options: {
+								onPaginationChange: setPagination,
+								rowCount: categories.length,
+							},
+						}}
+						search={{
+							value: globalFilter,
+							onChange: setGlobalFilter,
+						}}
+						noData={{
+							title: isLoading
+								? "Loading categories..."
+								: "No categories found",
+							description: "Get started by creating your first category.",
+						}}
+					/>
 
 					{/* Create Dialog */}
 					<CategoryForm

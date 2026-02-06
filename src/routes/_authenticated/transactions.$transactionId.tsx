@@ -29,6 +29,7 @@ import {
 	useUpdateTransaction,
 } from "@/hooks/transactions/mutations";
 import { useGetTransactionById } from "@/hooks/transactions/queries";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 export const Route = createFileRoute(
 	"/_authenticated/transactions/$transactionId",
@@ -116,10 +117,10 @@ function TransactionDetailPage() {
 	}
 
 	const amountNum = parseFloat(transaction.amount ?? "0");
-	const formattedAmount = new Intl.NumberFormat("ne-NP", {
-		style: "currency",
-		currency: transaction.currency ?? "NPR",
-	}).format(amountNum);
+	const formattedAmount = formatCurrency(
+		amountNum,
+		transaction.currency ?? "NPR",
+	);
 	const isDebit = transaction.type === "debit";
 
 	return (

@@ -7,6 +7,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
+import { formatCurrency, formatCurrencyShort } from "@/lib/formatCurrency";
 
 export type SpendingDataPoint = {
 	day: number;
@@ -40,7 +41,7 @@ export function SpendingLineChart({
 		: `Spending ${perLabel}`;
 
 	return (
-		<Card className="hover:shadow-md transition-shadow">
+		<Card className="hover:shadow-md transition-shadow min-w-0 overflow-hidden">
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
 					<TrendingUp className="h-5 w-5" />
@@ -48,7 +49,7 @@ export function SpendingLineChart({
 				</CardTitle>
 				<p className="text-sm text-muted-foreground">{subtitle}</p>
 			</CardHeader>
-			<CardContent>
+			<CardContent className="px-4">
 				{data.length > 0 ? (
 					<ChartContainer config={lineChartConfig} className="h-[300px] w-full">
 						<LineChart data={data} accessibilityLayer>
@@ -57,19 +58,21 @@ export function SpendingLineChart({
 								dataKey="label"
 								tickLine={false}
 								axisLine={false}
-								tickMargin={8}
+								tickMargin={10}
+								fontSize={12}
+								angle={granularity === "day" ? 315 : 0}
 							/>
 							<YAxis
 								tickLine={false}
 								axisLine={false}
-								tickFormatter={(value) => `Rs. ${value / 1000}k`}
+								tickFormatter={(value) => formatCurrencyShort(value)}
+								width={20}
+								fontSize={12}
 							/>
 							<ChartTooltip
 								content={
 									<ChartTooltipContent
-										formatter={(value) =>
-											`Rs. ${Number(value).toLocaleString()}`
-										}
+										formatter={(value) => formatCurrency(Number(value))}
 									/>
 								}
 							/>
@@ -78,7 +81,8 @@ export function SpendingLineChart({
 								dataKey="spending"
 								stroke="hsl(217, 91%, 60%)"
 								strokeWidth={2}
-								dot={{ fill: "hsl(217, 91%, 60%)" }}
+								dot={false}
+								activeDot={{ r: 4, fill: "hsl(217, 91%, 60%)" }}
 							/>
 						</LineChart>
 					</ChartContainer>

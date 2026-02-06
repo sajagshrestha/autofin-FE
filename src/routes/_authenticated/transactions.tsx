@@ -4,34 +4,33 @@ import {
 	Outlet,
 	useNavigate,
 } from "@tanstack/react-router";
-import {
-	type ColumnDef,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	type SortingState,
-	useReactTable,
+import type {
+	ColumnDef,
+	PaginationState,
+	SortingState,
 } from "@tanstack/react-table";
 import { format } from "date-fns";
 import {
-	ArrowDown,
-	ArrowUp,
-	ArrowUpDown,
 	Eye,
 	MessageSquarePlus,
 	MoreVertical,
 	Pencil,
-	Search,
 	Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { CreateTransactionFromSmsForm } from "@/components/CreateTransactionFromSmsForm";
 import { EditTransactionForm } from "@/components/EditTransactionForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
+import {
+	DateFilter,
+	type DatePeriod,
+	type DateRange,
+	getDateRangeForPeriod,
+} from "@/components/ui/date-filter";
 import {
 	Dialog,
 	DialogContent,
@@ -47,15 +46,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
 import type { Transaction } from "@/hooks";
 import { useGetAllCategories } from "@/hooks/categories/queries";
 import {
@@ -64,13 +54,38 @@ import {
 	useUpdateTransaction,
 } from "@/hooks/transactions/mutations";
 import { useGetAllTransactions } from "@/hooks/transactions/queries";
+import { formatCurrency } from "@/lib/formatCurrency";
+
+const defaultRange = getDateRangeForPeriod("daily");
+
+const searchParamsSchema = z.object({
+	period: z
+		.enum(["daily", "weekly", "monthly", "yearly", "all"])
+		.optional()
+		.default("daily"),
+	startDate: z
+		.string()
+		.optional()
+		.default(defaultRange.startDate ?? ""),
+	endDate: z
+		.string()
+		.optional()
+		.default(defaultRange.endDate ?? ""),
+});
+
 export const Route = createFileRoute("/_authenticated/transactions")({
+	validateSearch: searchParamsSchema,
 	component: TransactionsPage,
 });
 
 function TransactionsPage() {
+	const { period, startDate, endDate } = Route.useSearch();
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [globalFilter, setGlobalFilter] = useState("");
+	const [pagination, setPagination] = useState<PaginationState>({
+		pageIndex: 0,
+		pageSize: 10,
+	});
 	const [editingTransaction, setEditingTransaction] =
 		useState<Transaction | null>(null);
 	const [deletingTransaction, setDeletingTransaction] =
@@ -78,8 +93,39 @@ function TransactionsPage() {
 	const [smsDialogOpen, setSmsDialogOpen] = useState(false);
 
 	const navigate = useNavigate();
-	const { data: transactionsData, isLoading } = useGetAllTransactions({});
+	const searchNavigate = Route.useNavigate();
+	const { data: transactionsData, isLoading } = useGetAllTransactions({
+		startDate,
+		endDate,
+	});
 	const { data: categoriesData } = useGetAllCategories();
+
+	const handlePeriodChange = useCallback(
+		(newPeriod: DatePeriod) => {
+			const range = getDateRangeForPeriod(newPeriod);
+			searchNavigate({
+				search: {
+					period: newPeriod,
+					startDate: range.startDate,
+					endDate: range.endDate,
+				},
+			});
+		},
+		[searchNavigate],
+	);
+
+	const handleDateRangeChange = useCallback(
+		(range: DateRange) => {
+			searchNavigate({
+				search: (prev) => ({
+					...prev,
+					startDate: range.startDate,
+					endDate: range.endDate,
+				}),
+			});
+		},
+		[searchNavigate],
+	);
 
 	const updateMutation = useUpdateTransaction();
 	const deleteMutation = useDeleteTransaction();
@@ -91,23 +137,7 @@ function TransactionsPage() {
 	const columns: ColumnDef<Transaction>[] = [
 		{
 			accessorKey: "transactionDate",
-			header: ({ column }) => {
-				return (
-					<Button
-						variant="ghost"
-						onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					>
-						Date
-						{column.getIsSorted() === "asc" ? (
-							<ArrowUp className="ml-2 h-4 w-4" />
-						) : column.getIsSorted() === "desc" ? (
-							<ArrowDown className="ml-2 h-4 w-4" />
-						) : (
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						)}
-					</Button>
-				);
-			},
+			header: "Date",
 			cell: ({ row }) => {
 				const date = row.getValue("transactionDate");
 				return date ? format(new Date(date as string), "PPP") : "N/A";
@@ -171,30 +201,13 @@ function TransactionsPage() {
 		},
 		{
 			accessorKey: "amount",
-			header: ({ column }) => (
-				<div className="text-right">
-					<Button
-						variant="ghost"
-						onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					>
-						Amount
-						{column.getIsSorted() === "asc" ? (
-							<ArrowUp className="ml-2 h-4 w-4" />
-						) : column.getIsSorted() === "desc" ? (
-							<ArrowDown className="ml-2 h-4 w-4" />
-						) : (
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						)}
-					</Button>
-				</div>
-			),
+			header: () => <div className="text-right">Amount</div>,
 			cell: ({ row }) => {
 				const amount = parseFloat(row.getValue("amount") || "0");
-				const formatted = new Intl.NumberFormat("ne-NP", {
-					style: "currency",
-					currency: row.original.currency || "NPR",
-				}).format(amount);
-
+				const formatted = formatCurrency(
+					amount,
+					row.original.currency || "NPR",
+				);
 				return <div className="text-right font-medium">{formatted}</div>;
 			},
 		},
@@ -249,21 +262,6 @@ function TransactionsPage() {
 		},
 	];
 
-	const table = useReactTable({
-		data: transactions,
-		columns,
-		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		onSortingChange: setSorting,
-		onGlobalFilterChange: setGlobalFilter,
-		state: {
-			sorting,
-			globalFilter,
-		},
-	});
-
 	const handleDelete = () => {
 		if (!deletingTransaction) return;
 
@@ -291,224 +289,162 @@ function TransactionsPage() {
 
 	return (
 		<>
-			{
-				<div className="flex-1 p-4 md:p-8 max-w-6xl mx-auto space-y-8">
-					<div className="flex flex-col gap-4">
-						<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-							<div>
-								<h1 className="text-3xl font-bold tracking-tight">
-									Transactions
-								</h1>
-								<p className="text-muted-foreground mt-1">
-									View and manage your tracked expenses.
-								</p>
-							</div>
+			<div className="flex-1 p-4 md:p-8 max-w-6xl mx-auto space-y-8 min-w-0 overflow-hidden">
+				<div className="flex flex-col gap-4">
+					<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+						<div>
+							<h1 className="text-3xl font-bold tracking-tight">
+								Transactions
+							</h1>
+							<p className="text-muted-foreground mt-1">
+								View and manage your tracked expenses.
+							</p>
 						</div>
-					</div>
-					<div className="flex flex-col gap-4">
-						<div className="flex flex-wrap items-center justify-end gap-2">
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => setSmsDialogOpen(true)}
-							>
-								<MessageSquarePlus className="mr-2 h-4 w-4" />
-								Create from SMS
-							</Button>
-							<div className="relative">
-								<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-								<Input
-									placeholder="Search transactions..."
-									value={globalFilter ?? ""}
-									onChange={(event) => setGlobalFilter(event.target.value)}
-									className="pl-8 w-full md:w-[300px]"
-								/>
-							</div>
-						</div>
-						<div className="rounded-md border bg-card">
-							<Table>
-								<TableHeader>
-									{table.getHeaderGroups().map((headerGroup) => (
-										<TableRow key={headerGroup.id}>
-											{headerGroup.headers.map((header) => {
-												return (
-													<TableHead key={header.id}>
-														{header.isPlaceholder
-															? null
-															: flexRender(
-																	header.column.columnDef.header,
-																	header.getContext(),
-																)}
-													</TableHead>
-												);
-											})}
-										</TableRow>
-									))}
-								</TableHeader>
-								<TableBody>
-									{table.getRowModel().rows?.length ? (
-										table.getRowModel().rows.map((row) => (
-											<TableRow
-												key={row.id}
-												className="cursor-pointer border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-												onClick={() =>
-													navigate({
-														to: "/transactions/$transactionId",
-														params: { transactionId: row.original.id },
-													})
-												}
-												onKeyDown={(e) => {
-													if (e.key === "Enter" || e.key === " ") {
-														e.preventDefault();
-														navigate({
-															to: "/transactions/$transactionId",
-															params: { transactionId: row.original.id },
-														});
-													}
-												}}
-												role="button"
-												tabIndex={0}
-											>
-												{row.getVisibleCells().map((cell) => (
-													<TableCell key={cell.id}>
-														{flexRender(
-															cell.column.columnDef.cell,
-															cell.getContext(),
-														)}
-													</TableCell>
-												))}
-											</TableRow>
-										))
-									) : (
-										<TableRow>
-											<TableCell
-												colSpan={columns.length}
-												className="h-24 text-center"
-											>
-												{isLoading ? "Loading transactions..." : "No results."}
-											</TableCell>
-										</TableRow>
-									)}
-								</TableBody>
-							</Table>
-						</div>
-
-						{/* <div className="flex items-center justify-end space-x-2 py-4">
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.previousPage()}
-						disabled={!table.getCanPreviousPage()}
-					>
-						<ChevronLeft className="h-4 w-4" />
-						Previous
-					</Button>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.nextPage()}
-						disabled={!table.getCanNextPage()}
-					>
-						Next
-						<ChevronRight className="h-4 w-4" />
-					</Button>
-				</div> */}
-					</div>
-
-					{/* Edit Dialog */}
-					{editingTransaction && (
-						<EditTransactionForm
-							transaction={editingTransaction}
-							categories={categories}
-							open={!!editingTransaction}
-							onOpenChange={(open) => !open && setEditingTransaction(null)}
-							onSubmit={(body) => {
-								updateMutation.mutate(
-									{
-										params: {
-											path: { id: editingTransaction.id },
-										},
-										body,
-									},
-									{
-										onSuccess: () => {
-											toast.success("Transaction updated");
-											setEditingTransaction(null);
-										},
-										onError: (error) => {
-											toast.error("Failed to update transaction", {
-												description: error.message,
-											});
-										},
-									},
-								);
-							}}
-							isPending={updateMutation.isPending}
-							onCancel={() => setEditingTransaction(null)}
+						<DateFilter
+							period={period}
+							startDate={startDate}
+							endDate={endDate}
+							onPeriodChange={handlePeriodChange}
+							onDateRangeChange={handleDateRangeChange}
 						/>
-					)}
+					</div>
+				</div>
+				<DataTable
+					columns={columns}
+					data={transactions}
+					isLoading={isLoading}
+					sorting={{
+						state: sorting,
+						onSortingChange: setSorting,
+					}}
+					pagination={{
+						state: pagination,
+						options: {
+							onPaginationChange: setPagination,
+							rowCount: transactions.length,
+						},
+					}}
+					search={{
+						value: globalFilter,
+						onChange: setGlobalFilter,
+					}}
+					headerButtons={
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => setSmsDialogOpen(true)}
+						>
+							<MessageSquarePlus className="mr-2 h-4 w-4" />
+							Create from SMS
+						</Button>
+					}
+					noData={{
+						title: isLoading
+							? "Loading transactions..."
+							: "No transactions found",
+						description: "Get started by creating a transaction from SMS.",
+					}}
+					onRowClick={(row) =>
+						navigate({
+							to: "/transactions/$transactionId",
+							params: { transactionId: row.original.id },
+						})
+					}
+				/>
 
-					{/* Create from SMS Dialog */}
-					<CreateTransactionFromSmsForm
-						key={String(smsDialogOpen)}
-						open={smsDialogOpen}
-						onOpenChange={setSmsDialogOpen}
+				{/* Edit Dialog */}
+				{editingTransaction && (
+					<EditTransactionForm
+						transaction={editingTransaction}
+						categories={categories}
+						open={!!editingTransaction}
+						onOpenChange={(open) => !open && setEditingTransaction(null)}
 						onSubmit={(body) => {
-							createFromSmsMutation.mutate(
-								{ body },
+							updateMutation.mutate(
+								{
+									params: {
+										path: { id: editingTransaction.id },
+									},
+									body,
+								},
 								{
 									onSuccess: () => {
-										toast.success("Transaction created from SMS");
-										setSmsDialogOpen(false);
+										toast.success("Transaction updated");
+										setEditingTransaction(null);
 									},
 									onError: (error) => {
-										toast.error("Failed to create transaction", {
+										toast.error("Failed to update transaction", {
 											description: error.message,
 										});
 									},
 								},
 							);
 						}}
-						isPending={createFromSmsMutation.isPending}
-						onCancel={() => setSmsDialogOpen(false)}
+						isPending={updateMutation.isPending}
+						onCancel={() => setEditingTransaction(null)}
 					/>
+				)}
 
-					{/* Delete Confirmation */}
-					<Dialog
-						open={!!deletingTransaction}
-						onOpenChange={(open) => !open && setDeletingTransaction(null)}
-					>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Are you sure?</DialogTitle>
-								<DialogDescription>
-									This action cannot be undone. This will permanently delete the
-									transaction for{" "}
-									<span className="font-medium">
-										{deletingTransaction?.merchant}
-									</span>
-									.
-								</DialogDescription>
-							</DialogHeader>
-							<DialogFooter>
-								<Button
-									variant="outline"
-									onClick={() => setDeletingTransaction(null)}
-								>
-									Cancel
-								</Button>
-								<Button
-									variant="destructive"
-									onClick={handleDelete}
-									disabled={deleteMutation.isPending}
-								>
-									{deleteMutation.isPending ? "Deleting..." : "Delete"}
-								</Button>
-							</DialogFooter>
-						</DialogContent>
-					</Dialog>
-				</div>
-			}
+				{/* Create from SMS Dialog */}
+				<CreateTransactionFromSmsForm
+					key={String(smsDialogOpen)}
+					open={smsDialogOpen}
+					onOpenChange={setSmsDialogOpen}
+					onSubmit={(body) => {
+						createFromSmsMutation.mutate(
+							{ body },
+							{
+								onSuccess: () => {
+									toast.success("Transaction created from SMS");
+									setSmsDialogOpen(false);
+								},
+								onError: (error) => {
+									toast.error("Failed to create transaction", {
+										description: error.message,
+									});
+								},
+							},
+						);
+					}}
+					isPending={createFromSmsMutation.isPending}
+					onCancel={() => setSmsDialogOpen(false)}
+				/>
+
+				{/* Delete Confirmation */}
+				<Dialog
+					open={!!deletingTransaction}
+					onOpenChange={(open) => !open && setDeletingTransaction(null)}
+				>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Are you sure?</DialogTitle>
+							<DialogDescription>
+								This action cannot be undone. This will permanently delete the
+								transaction for{" "}
+								<span className="font-medium">
+									{deletingTransaction?.merchant}
+								</span>
+								.
+							</DialogDescription>
+						</DialogHeader>
+						<DialogFooter>
+							<Button
+								variant="outline"
+								onClick={() => setDeletingTransaction(null)}
+							>
+								Cancel
+							</Button>
+							<Button
+								variant="destructive"
+								onClick={handleDelete}
+								disabled={deleteMutation.isPending}
+							>
+								{deleteMutation.isPending ? "Deleting..." : "Delete"}
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			</div>
 			<Outlet />
 		</>
 	);

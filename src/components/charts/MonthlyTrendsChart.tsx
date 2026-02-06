@@ -7,6 +7,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
+import { formatCurrencyShort } from "@/lib/formatCurrency";
 
 export type MonthlyTrendsDataPoint = {
 	month: string;
@@ -31,7 +32,7 @@ type MonthlyTrendsChartProps = {
 
 export function MonthlyTrendsChart({ data }: MonthlyTrendsChartProps) {
 	return (
-		<Card className="hover:shadow-md transition-shadow">
+		<Card className="hover:shadow-md transition-shadow min-w-0 overflow-hidden">
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
 					<TrendingUp className="h-5 w-5" />
@@ -52,7 +53,7 @@ export function MonthlyTrendsChart({ data }: MonthlyTrendsChartProps) {
 							<YAxis
 								tickLine={false}
 								axisLine={false}
-								tickFormatter={(value) => `Rs. ${value / 1000}k`}
+								tickFormatter={(value) => formatCurrencyShort(value)}
 							/>
 							<ChartTooltip content={<ChartTooltipContent />} />
 							<Area
