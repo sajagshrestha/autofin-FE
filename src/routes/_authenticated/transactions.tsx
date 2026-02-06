@@ -137,10 +137,10 @@ function TransactionsPage() {
 	const columns: ColumnDef<Transaction>[] = [
 		{
 			accessorKey: "transactionDate",
-			header: "Date",
+			header: "Date & time",
 			cell: ({ row }) => {
 				const date = row.getValue("transactionDate");
-				return date ? format(new Date(date as string), "PPP") : "N/A";
+				return date ? format(new Date(date as string), "PPp") : "N/A";
 			},
 		},
 		{
