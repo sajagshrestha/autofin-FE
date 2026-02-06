@@ -3,7 +3,6 @@ import {
 	Link,
 	Outlet,
 	useNavigate,
-	useRouterState,
 } from "@tanstack/react-router";
 import {
 	type ColumnDef,
@@ -30,7 +29,6 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { CreateTransactionFromSmsForm } from "@/components/CreateTransactionFromSmsForm";
-import { DateFilter } from "@/components/DateFilter";
 import { EditTransactionForm } from "@/components/EditTransactionForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -66,10 +64,7 @@ import {
 	useUpdateTransaction,
 } from "@/hooks/transactions/mutations";
 import { useGetAllTransactions } from "@/hooks/transactions/queries";
-import { dateFilterSearchSchema, getDateRangeForApi } from "@/lib/date-filter";
-
 export const Route = createFileRoute("/_authenticated/transactions")({
-	validateSearch: dateFilterSearchSchema,
 	component: TransactionsPage,
 });
 
@@ -82,17 +77,8 @@ function TransactionsPage() {
 		useState<Transaction | null>(null);
 	const [smsDialogOpen, setSmsDialogOpen] = useState(false);
 
-	const search = Route.useSearch();
 	const navigate = useNavigate();
-	const pathname = useRouterState({ select: (s) => s.location.pathname });
-	const isListPage =
-		pathname === "/transactions" || pathname === "/transactions/";
-	const dateRangeParams = getDateRangeForApi(search);
-
-	const { data: transactionsData, isLoading } = useGetAllTransactions({
-		startDate: dateRangeParams.startDate,
-		endDate: dateRangeParams.endDate,
-	});
+	const { data: transactionsData, isLoading } = useGetAllTransactions({});
 	const { data: categoriesData } = useGetAllCategories();
 
 	const updateMutation = useUpdateTransaction();
@@ -305,7 +291,7 @@ function TransactionsPage() {
 
 	return (
 		<>
-			{isListPage && (
+			{
 				<div className="flex-1 p-4 md:p-8 max-w-6xl mx-auto space-y-8">
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -317,12 +303,6 @@ function TransactionsPage() {
 									View and manage your tracked expenses.
 								</p>
 							</div>
-							<DateFilter
-								value={search}
-								onChange={(next) =>
-									navigate({ to: ".", search: { ...search, ...next } })
-								}
-							/>
 						</div>
 					</div>
 					<div className="flex flex-col gap-4">
@@ -528,7 +508,7 @@ function TransactionsPage() {
 						</DialogContent>
 					</Dialog>
 				</div>
-			)}
+			}
 			<Outlet />
 		</>
 	);

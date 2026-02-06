@@ -1,5 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { eachDayOfInterval, eachMonthOfInterval, format } from "date-fns";
+import { createFileRoute } from "@tanstack/react-router";
+import { eachMonthOfInterval, format } from "date-fns";
 import { ArrowDownRight, ArrowUpRight, CreditCard } from "lucide-react";
 import { useMemo } from "react";
 import {
@@ -9,20 +9,10 @@ import {
 	MonthlyTrendsChart,
 	SpendingLineChart,
 } from "@/components/charts";
-import { DateFilter } from "@/components/DateFilter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetAllTransactions } from "@/hooks/transactions/queries";
-import {
-	dateFilterSearchSchema,
-	getDateRangeForApi,
-	getDefaultPeriodStart,
-	getPeriodBoundsFromParams,
-	getPeriodLabel,
-} from "@/lib/date-filter";
-
 export const Route = createFileRoute("/_authenticated/")({
-	validateSearch: dateFilterSearchSchema,
 	component: AnalyticsDashboard,
 });
 
@@ -41,14 +31,7 @@ const CHART_COLORS = [
 ];
 
 function AnalyticsDashboard() {
-	const search = Route.useSearch();
-	const navigate = useNavigate();
-	const dateRangeParams = getDateRangeForApi(search);
-
-	const { data: transactionsData, isLoading } = useGetAllTransactions({
-		startDate: dateRangeParams.startDate,
-		endDate: dateRangeParams.endDate,
-	});
+	const { data: transactionsData, isLoading } = useGetAllTransactions({});
 
 	const transactions = useMemo(
 		() => transactionsData?.transactions || [],
@@ -151,56 +134,38 @@ function AnalyticsDashboard() {
 			}));
 	}, [transactions]);
 
-	// Spending for the selected period (per day, or per month when "All time")
+	// Spending data grouped by month
 	const spendingData = useMemo(() => {
-		const view = search.view ?? "monthly";
-		const { start, end } = getPeriodBoundsFromParams(search);
+		if (!transactions.length) return [];
 
-		if (view === "all_time") {
-			const months = eachMonthOfInterval({ start, end });
-			const monthKeyToSpending = new Map<string, number>();
-			for (const m of months) {
-				monthKeyToSpending.set(format(m, "yyyy-MM"), 0);
-			}
-			transactions.forEach((t) => {
-				if (t.type === "credit") return;
-				const date = t.transactionDate
-					? new Date(t.transactionDate)
-					: new Date();
-				const key = format(date, "yyyy-MM");
-				if (!monthKeyToSpending.has(key)) return;
-				const amount = parseFloat(t.amount || "0");
-				monthKeyToSpending.set(
-					key,
-					(monthKeyToSpending.get(key) ?? 0) + amount,
-				);
-			});
-			return months.map((m, index) => ({
-				day: index + 1,
-				label: format(m, "MMM yyyy"),
-				spending: monthKeyToSpending.get(format(m, "yyyy-MM")) ?? 0,
-			}));
-		}
+		const dates = transactions
+			.map((t) => (t.transactionDate ? new Date(t.transactionDate) : null))
+			.filter((d): d is Date => d !== null);
 
-		const days = eachDayOfInterval({ start, end });
-		const dayKeyToSpending = new Map<string, number>();
-		for (const d of days) {
-			dayKeyToSpending.set(format(d, "yyyy-MM-dd"), 0);
+		if (!dates.length) return [];
+
+		const minDate = new Date(Math.min(...dates.map((d) => d.getTime())));
+		const maxDate = new Date(Math.max(...dates.map((d) => d.getTime())));
+
+		const months = eachMonthOfInterval({ start: minDate, end: maxDate });
+		const monthKeyToSpending = new Map<string, number>();
+		for (const m of months) {
+			monthKeyToSpending.set(format(m, "yyyy-MM"), 0);
 		}
 		transactions.forEach((t) => {
 			if (t.type === "credit") return;
 			const date = t.transactionDate ? new Date(t.transactionDate) : new Date();
-			const key = format(date, "yyyy-MM-dd");
-			if (!dayKeyToSpending.has(key)) return;
+			const key = format(date, "yyyy-MM");
+			if (!monthKeyToSpending.has(key)) return;
 			const amount = parseFloat(t.amount || "0");
-			dayKeyToSpending.set(key, (dayKeyToSpending.get(key) ?? 0) + amount);
+			monthKeyToSpending.set(key, (monthKeyToSpending.get(key) ?? 0) + amount);
 		});
-		return days.map((d, index) => ({
+		return months.map((m, index) => ({
 			day: index + 1,
-			label: format(d, "MMM d"),
-			spending: dayKeyToSpending.get(format(d, "yyyy-MM-dd")) ?? 0,
+			label: format(m, "MMM yyyy"),
+			spending: monthKeyToSpending.get(format(m, "yyyy-MM")) ?? 0,
 		}));
-	}, [transactions, search]);
+	}, [transactions]);
 
 	// Bank breakdown for bar chart
 	const bankData = useMemo(() => {
@@ -239,12 +204,6 @@ function AnalyticsDashboard() {
 							Overview of your spending patterns and transactions.
 						</p>
 					</div>
-					<DateFilter
-						value={search}
-						onChange={(next) =>
-							navigate({ to: ".", search: { ...search, ...next } })
-						}
-					/>
 				</div>
 
 				{isLoading ? (
@@ -379,12 +338,8 @@ function AnalyticsDashboard() {
 						{/* Daily spending line chart - full width */}
 						<SpendingLineChart
 							data={spendingData}
-							periodLabel={getPeriodLabel(
-								search.view ?? "monthly",
-								search.periodStart ??
-									getDefaultPeriodStart(search.view ?? "monthly"),
-							)}
-							granularity={search.view === "all_time" ? "month" : "day"}
+							periodLabel="All Transactions"
+							granularity="month"
 						/>
 
 						{/* Charts Row */}
