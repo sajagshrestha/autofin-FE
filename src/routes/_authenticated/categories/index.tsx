@@ -40,7 +40,7 @@ import {
 } from "@/hooks/categories/mutations";
 import { useGetAllCategories } from "@/hooks/categories/queries";
 
-export const Route = createFileRoute("/_authenticated/categories")({
+export const Route = createFileRoute("/_authenticated/categories/")({
 	component: CategoriesPage,
 });
 
@@ -72,25 +72,18 @@ function CategoriesPage() {
 			accessorKey: "name",
 			header: "Name",
 			cell: ({ row }) => (
-				<div className="flex items-center gap-2 font-medium">
-					{row.original.icon && (
-						<span className="text-lg">{row.original.icon}</span>
-					)}
-					{row.getValue("name")}
-				</div>
+				<Link
+					to="/categories/$categoryId"
+					params={{ categoryId: row.original.id }}
+				>
+					<div className="flex items-center gap-2 font-medium">
+						{row.original.icon && (
+							<span className="text-lg">{row.original.icon}</span>
+						)}
+						{row.getValue("name")}
+					</div>
+				</Link>
 			),
-		},
-		{
-			accessorKey: "icon",
-			header: "Icon",
-			cell: ({ row }) => {
-				const icon = row.getValue("icon") as string | null;
-				return icon ? (
-					<span className="text-lg">{icon}</span>
-				) : (
-					<span className="text-muted-foreground">—</span>
-				);
-			},
 		},
 		{
 			id: "type",

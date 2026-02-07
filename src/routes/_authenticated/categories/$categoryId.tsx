@@ -1,8 +1,9 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { BackButton } from "@/components/BackButton";
 import { CategoryForm, type CategoryFormBody } from "@/components/CategoryForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -118,12 +119,9 @@ function CategoryDetailPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<Button asChild variant="outline">
-							<Link to="/categories" className="gap-2">
-								<ArrowLeft className="h-4 w-4" />
-								Back to Categories
-							</Link>
-						</Button>
+						<BackButton fallback="/categories" variant="outline">
+							Back to Categories
+						</BackButton>
 					</CardContent>
 				</Card>
 			</div>
@@ -141,12 +139,14 @@ function CategoryDetailPage() {
 	return (
 		<div className="flex-1 p-4 md:p-8 max-w-3xl mx-auto space-y-6">
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-				<Button variant="ghost" size="sm" asChild>
-					<Link to="/categories" className="gap-2">
-						<ArrowLeft className="h-4 w-4" />
-						Back to Categories
-					</Link>
-				</Button>
+				<BackButton
+					fallback="/categories"
+					variant="ghost"
+					size="sm"
+					className="gap-2"
+				>
+					Back to Categories
+				</BackButton>
 				{canEdit && (
 					<div className="flex items-center gap-2">
 						<Button

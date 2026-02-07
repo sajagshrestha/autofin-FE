@@ -73,7 +73,7 @@ const searchParamsSchema = z.object({
 		.default(defaultRange.endDate ?? ""),
 });
 
-export const Route = createFileRoute("/_authenticated/transactions")({
+export const Route = createFileRoute("/_authenticated/transactions/")({
 	validateSearch: searchParamsSchema,
 	component: TransactionsPage,
 });
@@ -154,11 +154,11 @@ function TransactionsPage() {
 		},
 		{
 			accessorKey: "category",
-			header: () => <span className="hidden md:table-cell">Category</span>,
+			header: "Category",
 			cell: ({ row }) => {
 				const category = row.original.category;
 				return (
-					<div className="hidden md:flex">
+					<div>
 						{category ? (
 							<Badge variant="secondary" className="font-normal">
 								{category.icon && <span className="mr-1">{category.icon}</span>}
@@ -175,9 +175,9 @@ function TransactionsPage() {
 		},
 		{
 			accessorKey: "bankName",
-			header: () => <span className="hidden lg:table-cell">Bank</span>,
+			header: "Bank",
 			cell: ({ row }) => (
-				<div className="hidden lg:block text-sm">
+				<div>
 					{row.getValue("bankName") || (
 						<span className="text-muted-foreground">-</span>
 					)}
@@ -186,14 +186,11 @@ function TransactionsPage() {
 		},
 		{
 			accessorKey: "remarks",
-			header: () => <span className="hidden xl:table-cell">Remarks</span>,
+			header: "Remarks",
 			cell: ({ row }) => {
 				const remarks = row.getValue("remarks") as string | null;
 				return (
-					<div
-						className="hidden xl:block text-sm max-w-[200px] truncate"
-						title={remarks || undefined}
-					>
+					<div className="max-w-[200px] truncate" title={remarks || undefined}>
 						{remarks || <span className="text-muted-foreground">-</span>}
 					</div>
 				);

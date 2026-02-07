@@ -1,8 +1,9 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { BackButton } from "@/components/BackButton";
 import { EditTransactionForm } from "@/components/EditTransactionForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -104,12 +105,9 @@ function TransactionDetailPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<Button asChild variant="outline">
-							<Link to="/transactions">
-								<ArrowLeft className="mr-2 h-4 w-4" />
-								Back to Transactions
-							</Link>
-						</Button>
+						<BackButton fallback="/transactions" variant="outline">
+							Back to Transactions
+						</BackButton>
 					</CardContent>
 				</Card>
 			</div>
@@ -126,12 +124,14 @@ function TransactionDetailPage() {
 	return (
 		<div className="flex-1 p-4 md:p-8 max-w-3xl mx-auto space-y-6">
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-				<Button variant="ghost" size="sm" asChild>
-					<Link to="/transactions" className="gap-2">
-						<ArrowLeft className="h-4 w-4" />
-						Back to Transactions
-					</Link>
-				</Button>
+				<BackButton
+					fallback="/transactions"
+					variant="ghost"
+					size="sm"
+					className="gap-2"
+				>
+					Back to Transactions
+				</BackButton>
 				<div className="flex items-center gap-2">
 					<Button
 						variant="outline"
