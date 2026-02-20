@@ -199,7 +199,6 @@ function AnalyticsDashboard() {
 
 		return Array.from(categoryMap.entries())
 			.sort((a, b) => b[1].amount - a[1].amount)
-			.slice(0, 6)
 			.map(([name, data], index) => ({
 				name,
 				value: data.amount,
@@ -457,7 +456,7 @@ function AnalyticsDashboard() {
 									<ArrowDownRight className="h-4 w-4 text-red-500" />
 								</CardHeader>
 								<CardContent>
-									<div className="text-2xl font-bold">
+									<div className="text-2xl font-bold text-red-600">
 										{formatCurrency(stats.totalExpenses)}
 									</div>
 									<p className="text-xs text-muted-foreground">
@@ -474,7 +473,7 @@ function AnalyticsDashboard() {
 									<ArrowUpRight className="h-4 w-4 text-green-500" />
 								</CardHeader>
 								<CardContent>
-									<div className="text-2xl font-bold">
+									<div className="text-2xl font-bold text-green-500">
 										{formatCurrency(stats.totalIncome)}
 									</div>
 									<p className="text-xs text-muted-foreground">
@@ -489,7 +488,7 @@ function AnalyticsDashboard() {
 										Savings
 									</CardTitle>
 									<PiggyBank
-										className={`h-4 w-4 ${stats.savings >= 0 ? "text-emerald-500" : "text-red-500"}`}
+										className={`h-4 w-4 ${stats.savings >= 0 ? "text-emerald-500" : "text-red-600"}`}
 									/>
 								</CardHeader>
 								<CardContent>
@@ -528,10 +527,8 @@ function AnalyticsDashboard() {
 						/>
 
 						{/* Charts Row */}
-						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-							<CategoryBarChart data={categoryData} />
-							<CategoryPieChart data={categoryData} />
-						</div>
+						<CategoryBarChart data={categoryData} />
+						<CategoryPieChart data={categoryData} />
 
 						{/* Bottom Charts Row */}
 						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
