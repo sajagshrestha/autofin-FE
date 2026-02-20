@@ -29,7 +29,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
 					<div className="flex flex-col md:flex-row items-center gap-4">
 						<ChartContainer
 							config={{}}
-							className="h-[250px] w-full max-w-[250px] aspect-square mx-auto"
+							className="h-[350px] w-full max-w-[350px] aspect-square mx-auto"
 						>
 							<PieChart>
 								<ChartTooltip
@@ -41,8 +41,8 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
 									nameKey="name"
 									cx="50%"
 									cy="50%"
-									innerRadius={50}
-									outerRadius={90}
+									innerRadius={70}
+									outerRadius={126}
 								>
 									{data.map((entry, index) => (
 										<Cell key={`cell-${index}`} fill={entry.fill} />
@@ -67,7 +67,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
 						</div>
 					</div>
 				) : (
-					<div className="h-[250px] flex items-center justify-center text-muted-foreground">
+					<div className="h-[350px] flex items-center justify-center text-muted-foreground">
 						No category data available
 					</div>
 				)}

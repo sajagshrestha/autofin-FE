@@ -117,7 +117,7 @@ function TransactionsPage() {
 	const handleDateRangeChange = useCallback(
 		(range: DateRange) => {
 			searchNavigate({
-				search: (prev: typeof searchParamsSchema.parse) => ({
+				search: (prev) => ({
 					...prev,
 					startDate: range.startDate,
 					endDate: range.endDate,

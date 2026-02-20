@@ -15,15 +15,7 @@ export default defineConfig({
     devtools(),
     tanstackRouter({
       target: 'react',
-      autoCodeSplitting: true,
-      codeSplittingOptions: {
-        splitBehavior: ({ routeId }) => {
-          // Disable code splitting for insights route to avoid dynamic import issues with react-markdown
-          if (String(routeId).includes('insights')) {
-            return []
-          }
-        },
-      },
+      autoCodeSplitting: false,
     }),
     viteReact(),
     tailwindcss(),

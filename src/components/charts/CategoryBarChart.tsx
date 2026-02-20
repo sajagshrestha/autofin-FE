@@ -34,7 +34,10 @@ export function CategoryBarChart({ data }: CategoryBarChartProps) {
 			</CardHeader>
 			<CardContent>
 				{data.length > 0 ? (
-					<ChartContainer config={barChartConfig} className="h-[300px] w-full">
+					<ChartContainer
+						config={barChartConfig}
+						className="h-[300px] md:h-auto w-full"
+					>
 						<BarChart
 							data={data}
 							accessibilityLayer
@@ -53,7 +56,7 @@ export function CategoryBarChart({ data }: CategoryBarChartProps) {
 								dataKey="name"
 								tickLine={false}
 								axisLine={false}
-								width={80}
+								width={120}
 							/>
 							<ChartTooltip content={<ChartTooltipContent />} />
 							<Bar

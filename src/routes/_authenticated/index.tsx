@@ -94,7 +94,7 @@ function AnalyticsDashboard() {
 	const handleDateRangeChange = useCallback(
 		(range: DateRange) => {
 			navigate({
-				search: (prev: typeof searchParamsSchema.parse) => ({
+				search: (prev) => ({
 					...prev,
 					startDate: range.startDate,
 					endDate: range.endDate,
