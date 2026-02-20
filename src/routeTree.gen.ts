@@ -16,6 +16,7 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedGoogleCallbackRouteImport } from './routes/_authenticated/google-callback'
 import { Route as AuthenticatedTransactionsIndexRouteImport } from './routes/_authenticated/transactions/index'
+import { Route as AuthenticatedInsightsIndexRouteImport } from './routes/_authenticated/insights/index'
 import { Route as AuthenticatedCategoriesIndexRouteImport } from './routes/_authenticated/categories/index'
 import { Route as AuthenticatedTransactionsTransactionIdRouteImport } from './routes/_authenticated/transactions/$transactionId'
 import { Route as AuthenticatedCategoriesCategoryIdRouteImport } from './routes/_authenticated/categories/$categoryId'
@@ -56,6 +57,12 @@ const AuthenticatedTransactionsIndexRoute =
     path: '/transactions/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedInsightsIndexRoute =
+  AuthenticatedInsightsIndexRouteImport.update({
+    id: '/insights/',
+    path: '/insights/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedCategoriesIndexRoute =
   AuthenticatedCategoriesIndexRouteImport.update({
     id: '/categories/',
@@ -84,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
   '/transactions/$transactionId': typeof AuthenticatedTransactionsTransactionIdRoute
   '/categories/': typeof AuthenticatedCategoriesIndexRoute
+  '/insights/': typeof AuthenticatedInsightsIndexRoute
   '/transactions/': typeof AuthenticatedTransactionsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -95,6 +103,7 @@ export interface FileRoutesByTo {
   '/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
   '/transactions/$transactionId': typeof AuthenticatedTransactionsTransactionIdRoute
   '/categories': typeof AuthenticatedCategoriesIndexRoute
+  '/insights': typeof AuthenticatedInsightsIndexRoute
   '/transactions': typeof AuthenticatedTransactionsIndexRoute
 }
 export interface FileRoutesById {
@@ -108,6 +117,7 @@ export interface FileRoutesById {
   '/_authenticated/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
   '/_authenticated/transactions/$transactionId': typeof AuthenticatedTransactionsTransactionIdRoute
   '/_authenticated/categories/': typeof AuthenticatedCategoriesIndexRoute
+  '/_authenticated/insights/': typeof AuthenticatedInsightsIndexRoute
   '/_authenticated/transactions/': typeof AuthenticatedTransactionsIndexRoute
 }
 export interface FileRouteTypes {
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/categories/$categoryId'
     | '/transactions/$transactionId'
     | '/categories/'
+    | '/insights/'
     | '/transactions/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/categories/$categoryId'
     | '/transactions/$transactionId'
     | '/categories'
+    | '/insights'
     | '/transactions'
   id:
     | '__root__'
@@ -144,6 +156,7 @@ export interface FileRouteTypes {
     | '/_authenticated/categories/$categoryId'
     | '/_authenticated/transactions/$transactionId'
     | '/_authenticated/categories/'
+    | '/_authenticated/insights/'
     | '/_authenticated/transactions/'
   fileRoutesById: FileRoutesById
 }
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTransactionsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/insights/': {
+      id: '/_authenticated/insights/'
+      path: '/insights'
+      fullPath: '/insights/'
+      preLoaderRoute: typeof AuthenticatedInsightsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/categories/': {
       id: '/_authenticated/categories/'
       path: '/categories'
@@ -235,6 +255,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCategoriesCategoryIdRoute: typeof AuthenticatedCategoriesCategoryIdRoute
   AuthenticatedTransactionsTransactionIdRoute: typeof AuthenticatedTransactionsTransactionIdRoute
   AuthenticatedCategoriesIndexRoute: typeof AuthenticatedCategoriesIndexRoute
+  AuthenticatedInsightsIndexRoute: typeof AuthenticatedInsightsIndexRoute
   AuthenticatedTransactionsIndexRoute: typeof AuthenticatedTransactionsIndexRoute
 }
 
@@ -247,6 +268,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedTransactionsTransactionIdRoute:
     AuthenticatedTransactionsTransactionIdRoute,
   AuthenticatedCategoriesIndexRoute: AuthenticatedCategoriesIndexRoute,
+  AuthenticatedInsightsIndexRoute: AuthenticatedInsightsIndexRoute,
   AuthenticatedTransactionsIndexRoute: AuthenticatedTransactionsIndexRoute,
 }
 

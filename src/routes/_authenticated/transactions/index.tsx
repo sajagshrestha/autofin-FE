@@ -117,7 +117,7 @@ function TransactionsPage() {
 	const handleDateRangeChange = useCallback(
 		(range: DateRange) => {
 			searchNavigate({
-				search: (prev) => ({
+				search: (prev: typeof searchParamsSchema.parse) => ({
 					...prev,
 					startDate: range.startDate,
 					endDate: range.endDate,
@@ -286,7 +286,7 @@ function TransactionsPage() {
 
 	return (
 		<>
-			<div className="flex-1 p-4 md:p-8 max-w-6xl mx-auto space-y-8 min-w-0 overflow-hidden">
+			<div className="max-w-6xl mx-auto space-y-8 min-w-0 overflow-hidden">
 				<div className="flex flex-col gap-4">
 					<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 						<div>

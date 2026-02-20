@@ -8,11 +8,22 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ['react-markdown'],
+  },
   plugins: [
     devtools(),
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
+      codeSplittingOptions: {
+        splitBehavior: ({ routeId }) => {
+          // Disable code splitting for insights route to avoid dynamic import issues with react-markdown
+          if (String(routeId).includes('insights')) {
+            return []
+          }
+        },
+      },
     }),
     viteReact(),
     tailwindcss(),

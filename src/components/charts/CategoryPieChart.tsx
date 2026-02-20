@@ -45,13 +45,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
 									outerRadius={90}
 								>
 									{data.map((entry, index) => (
-										<Cell
-											key={`cell-${
-												// biome-ignore lint/suspicious/noArrayIndexKey: stable list from data
-												index
-											}`}
-											fill={entry.fill}
-										/>
+										<Cell key={`cell-${index}`} fill={entry.fill} />
 									))}
 								</Pie>
 							</PieChart>

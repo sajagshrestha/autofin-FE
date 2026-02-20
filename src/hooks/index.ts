@@ -14,6 +14,8 @@ export * from "./categories";
 export * from "./gmail";
 // Health
 export * from "./health";
+// Insights
+export * from "./insights";
 // Transactions
 export * from "./transactions";
 // Users

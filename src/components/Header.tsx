@@ -3,6 +3,7 @@ import {
 	CreditCard,
 	FolderTree,
 	Home,
+	Lightbulb,
 	LogOut,
 	Menu,
 	Settings,
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
 		label: "Categories",
 		exact: false,
 	},
+	{ to: "/insights", icon: Lightbulb, label: "Insights", exact: false },
 	{ to: "/settings", icon: Settings, label: "Settings", exact: false },
 ];
 

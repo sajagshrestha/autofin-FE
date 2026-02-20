@@ -98,7 +98,7 @@ function CategoryDetailPage() {
 
 	if (isLoading) {
 		return (
-			<div className="flex-1 p-4 md:p-8 max-w-3xl mx-auto">
+			<div className="max-w-3xl mx-auto">
 				<div className="animate-pulse space-y-6">
 					<div className="h-8 w-48 bg-muted rounded" />
 					<div className="h-40 bg-muted rounded" />
@@ -110,7 +110,7 @@ function CategoryDetailPage() {
 
 	if (error || !category) {
 		return (
-			<div className="flex-1 p-4 md:p-8 max-w-3xl mx-auto">
+			<div className="max-w-3xl mx-auto">
 				<Card>
 					<CardHeader>
 						<CardTitle>Category not found</CardTitle>
@@ -137,7 +137,7 @@ function CategoryDetailPage() {
 	);
 
 	return (
-		<div className="flex-1 p-4 md:p-8 max-w-3xl mx-auto space-y-6">
+		<div className="max-w-3xl mx-auto space-y-6">
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<BackButton
 					fallback="/categories"

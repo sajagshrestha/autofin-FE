@@ -94,7 +94,7 @@ function AnalyticsDashboard() {
 	const handleDateRangeChange = useCallback(
 		(range: DateRange) => {
 			navigate({
-				search: (prev) => ({
+				search: (prev: typeof searchParamsSchema.parse) => ({
 					...prev,
 					startDate: range.startDate,
 					endDate: range.endDate,
@@ -350,7 +350,7 @@ function AnalyticsDashboard() {
 	}, [transactions]);
 
 	return (
-		<div className="flex-1 p-4 md:p-8 space-y-8 min-w-0 overflow-hidden">
+		<div className="space-y-8 min-w-0 overflow-hidden">
 			<div className="space-y-8 min-w-0">
 				{/* Header - always visible */}
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
