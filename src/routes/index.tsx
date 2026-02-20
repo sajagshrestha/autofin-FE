@@ -4,6 +4,7 @@ import {
 	CreditCard,
 	FolderTree,
 	Lightbulb,
+	Mail,
 	ShieldCheck,
 	Sparkles,
 	TrendingUp,
@@ -19,6 +20,12 @@ export const Route = createFileRoute("/")({
 });
 
 const FEATURES = [
+	{
+		icon: Mail,
+		title: "Gmail Auto-Tracking",
+		description:
+			"Connect your Gmail account to automatically detect and import transaction alerts from your bank, so you never miss a spend.",
+	},
 	{
 		icon: CreditCard,
 		title: "Transaction Tracking",
@@ -49,9 +56,9 @@ const STEPS = [
 	{
 		step: 2,
 		icon: Sparkles,
-		title: "Add Your Transactions",
+		title: "Connect Your Gmail",
 		description:
-			"Import bank statements or add transactions manually with SMS parsing.",
+			"Link your Gmail account so AutoFin can automatically read bank transaction emails and import them for you.",
 	},
 	{
 		step: 3,
@@ -107,8 +114,9 @@ function LandingPage() {
 						<span className="text-primary">Your Finances</span>
 					</h1>
 					<p className="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed">
-						Track transactions, manage categories, and understand your spending
-						patterns — all in one beautiful, intuitive dashboard.
+						Connect your Gmail to automatically track transactions, manage
+						categories, and understand your spending patterns — all in one
+						beautiful, intuitive dashboard.
 					</p>
 					<div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
 						{!loading && user ? (
@@ -152,7 +160,7 @@ function LandingPage() {
 							over your personal finances.
 						</p>
 					</div>
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 						{FEATURES.map((feature) => (
 							<Card
 								key={feature.title}

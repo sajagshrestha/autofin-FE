@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, BarChart3 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { Logo } from "@/components/Logo";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { Button } from "@/components/ui/button";
 
@@ -14,8 +15,7 @@ function PrivacyPolicyPage() {
 			<nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
 				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
 					<Link to="/" className="flex items-center gap-2">
-						<BarChart3 className="h-7 w-7 text-primary" />
-						<span className="text-2xl font-bold tracking-tight">AutoFin</span>
+						<Logo className="h-7" />
 					</Link>
 					<ThemeSwitcher />
 				</div>
@@ -66,9 +66,17 @@ function PrivacyPolicyPage() {
 								when you create an account.
 							</li>
 							<li>
+								<strong>Gmail Data:</strong> If you choose to connect your Gmail
+								account, we access your email messages solely to identify and
+								extract bank transaction alerts and financial notifications. We
+								only read emails that match transaction-related patterns (e.g.,
+								debit/credit alerts from banks) and do not access or store any
+								other email content.
+							</li>
+							<li>
 								<strong>Financial Data:</strong> Transaction details, amounts,
-								dates, categories, and bank names that you manually enter or
-								import into the application.
+								dates, categories, and bank names extracted from your Gmail
+								transaction alerts or manually entered into the application.
 							</li>
 							<li>
 								<strong>Usage Data:</strong> How you interact with the
@@ -91,6 +99,11 @@ function PrivacyPolicyPage() {
 							<li>
 								To provide, maintain, and improve the AutoFin application and
 								its features.
+							</li>
+							<li>
+								To automatically detect and import transactions from your Gmail
+								inbox by scanning bank alert emails, so you can track spending
+								without manual entry.
 							</li>
 							<li>
 								To generate spending analytics, insights, and category
@@ -180,7 +193,67 @@ function PrivacyPolicyPage() {
 
 					<section>
 						<h2 className="text-2xl font-semibold mb-3">
-							9. Changes to This Policy
+							9. Gmail Integration &amp; Google API Disclosure
+						</h2>
+						<p className="mb-3">
+							AutoFin offers an optional Gmail integration that automates
+							transaction tracking. When you connect your Google account, the
+							following applies:
+						</p>
+						<ul className="list-disc pl-6 space-y-2">
+							<li>
+								<strong>Scope of Access:</strong> We request read-only access to
+								your Gmail messages. AutoFin only scans for emails matching bank
+								transaction alert patterns (e.g., debit alerts, credit
+								notifications, payment confirmations). We do not read, store, or
+								process any other emails.
+							</li>
+							<li>
+								<strong>Data Extracted:</strong> From matching emails, we
+								extract only the transaction amount, merchant/description, date,
+								and bank name. The raw email content is not stored after
+								processing.
+							</li>
+							<li>
+								<strong>No Third-Party Sharing:</strong> Data obtained through
+								Google APIs is not shared with, sold to, or used by any third
+								parties. It is used solely to provide AutoFin's transaction
+								tracking features to you.
+							</li>
+							<li>
+								<strong>Revocation:</strong> You can disconnect your Gmail
+								account at any time from your AutoFin settings. You can also
+								revoke access via your{" "}
+								<a
+									href="https://myaccount.google.com/permissions"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-primary hover:underline font-medium"
+								>
+									Google Account permissions
+								</a>
+								. Upon disconnection, we stop accessing your Gmail and delete
+								any cached email data.
+							</li>
+							<li>
+								<strong>Compliance:</strong> Our use and transfer of information
+								received from Google APIs adheres to the{" "}
+								<a
+									href="https://developers.google.com/terms/api-services-user-data-policy"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-primary hover:underline font-medium"
+								>
+									Google API Services User Data Policy
+								</a>
+								, including the Limited Use requirements.
+							</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2 className="text-2xl font-semibold mb-3">
+							10. Changes to This Policy
 						</h2>
 						<p>
 							We may update this privacy policy from time to time. We will
@@ -192,7 +265,7 @@ function PrivacyPolicyPage() {
 					</section>
 
 					<section>
-						<h2 className="text-2xl font-semibold mb-3">10. Contact Us</h2>
+						<h2 className="text-2xl font-semibold mb-3">11. Contact Us</h2>
 						<p>
 							If you have any questions about this privacy policy or our data
 							practices, please contact us at{" "}
@@ -212,7 +285,7 @@ function PrivacyPolicyPage() {
 			<footer className="border-t border-border mt-16">
 				<div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
 					<div className="flex items-center gap-2">
-						<BarChart3 className="h-4 w-4" />
+						<Logo className="h-4" />
 						<span>&copy; {new Date().getFullYear()} AutoFin</span>
 					</div>
 					<div className="flex items-center gap-4">

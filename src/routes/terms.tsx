@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, BarChart3 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { Logo } from "@/components/Logo";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { Button } from "@/components/ui/button";
 
@@ -14,8 +15,7 @@ function TermsPage() {
 			<nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
 				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
 					<Link to="/" className="flex items-center gap-2">
-						<BarChart3 className="h-7 w-7 text-primary" />
-						<span className="text-2xl font-bold tracking-tight">AutoFin</span>
+						<Logo className="h-7" />
 					</Link>
 					<ThemeSwitcher />
 				</div>
@@ -62,9 +62,11 @@ function TermsPage() {
 						<p>
 							AutoFin is a personal finance management application that allows
 							users to track transactions, manage spending categories, and view
-							analytics and insights about their financial habits. The service
-							is provided "as is" and is intended for personal, non-commercial
-							use.
+							analytics and insights about their financial habits. AutoFin
+							offers an optional Gmail integration that automatically reads bank
+							transaction alert emails from your connected Google account to
+							import and track your transactions. The service is provided "as
+							is" and is intended for personal, non-commercial use.
 						</p>
 					</section>
 
@@ -96,10 +98,14 @@ function TermsPage() {
 						</h2>
 						<p>
 							You retain ownership of all financial data and content you enter
-							into AutoFin. By using the service, you grant us a limited license
-							to process, store, and display your data solely for the purpose of
-							providing the service to you. We will not use your financial data
-							for any other purpose without your explicit consent.
+							into AutoFin, including data imported via the Gmail integration.
+							By using the service, you grant us a limited license to process,
+							store, and display your data solely for the purpose of providing
+							the service to you. When you connect your Gmail account, you
+							authorize AutoFin to access your emails in read-only mode to
+							identify and extract bank transaction alerts. We will not use your
+							financial data or email content for any other purpose without your
+							explicit consent.
 						</p>
 					</section>
 
@@ -132,7 +138,53 @@ function TermsPage() {
 
 					<section>
 						<h2 className="text-2xl font-semibold mb-3">
-							6. Financial Disclaimer
+							6. Gmail Integration &amp; Automated Tracking
+						</h2>
+						<p className="mb-3">
+							AutoFin provides an optional feature that connects to your Gmail
+							account to automate transaction tracking. By enabling this
+							feature, you acknowledge and agree to the following:
+						</p>
+						<ul className="list-disc pl-6 space-y-2">
+							<li>
+								You grant AutoFin read-only access to your Gmail inbox for the
+								sole purpose of scanning and extracting bank transaction alert
+								emails (e.g., debit/credit notifications, payment
+								confirmations).
+							</li>
+							<li>
+								AutoFin does not read, store, or process any emails beyond those
+								matching financial transaction patterns. Non-matching emails are
+								never accessed or retained.
+							</li>
+							<li>
+								Transaction data extracted from emails (amount, merchant, date,
+								bank name) is stored in your AutoFin account and treated with
+								the same security protections as all other user data.
+							</li>
+							<li>
+								You may disconnect your Gmail account at any time through your
+								AutoFin settings or by revoking access from your Google Account
+								permissions page. Upon disconnection, AutoFin will stop
+								accessing your Gmail.
+							</li>
+							<li>
+								AutoFin's use of Google API data complies with the Google API
+								Services User Data Policy, including the Limited Use
+								requirements. Data obtained through Google APIs is not shared
+								with or sold to third parties.
+							</li>
+							<li>
+								AutoFin is not responsible for delays, inaccuracies, or missed
+								transactions resulting from changes in email formats, Gmail API
+								availability, or bank notification practices.
+							</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2 className="text-2xl font-semibold mb-3">
+							7. Financial Disclaimer
 						</h2>
 						<p>
 							AutoFin is a tool for tracking and visualizing your personal
@@ -148,7 +200,7 @@ function TermsPage() {
 
 					<section>
 						<h2 className="text-2xl font-semibold mb-3">
-							7. Limitation of Liability
+							8. Limitation of Liability
 						</h2>
 						<p>
 							To the maximum extent permitted by applicable law, AutoFin and its
@@ -162,7 +214,7 @@ function TermsPage() {
 
 					<section>
 						<h2 className="text-2xl font-semibold mb-3">
-							8. Service Availability
+							9. Service Availability
 						</h2>
 						<p>
 							We strive to maintain high availability of the service but do not
@@ -175,7 +227,7 @@ function TermsPage() {
 
 					<section>
 						<h2 className="text-2xl font-semibold mb-3">
-							9. Intellectual Property
+							10. Intellectual Property
 						</h2>
 						<p>
 							The AutoFin application, including its design, code, features,
@@ -187,7 +239,7 @@ function TermsPage() {
 					</section>
 
 					<section>
-						<h2 className="text-2xl font-semibold mb-3">10. Termination</h2>
+						<h2 className="text-2xl font-semibold mb-3">11. Termination</h2>
 						<p>
 							We may terminate or suspend your access to the service
 							immediately, without prior notice or liability, for any reason,
@@ -201,7 +253,7 @@ function TermsPage() {
 
 					<section>
 						<h2 className="text-2xl font-semibold mb-3">
-							11. Changes to Terms
+							12. Changes to Terms
 						</h2>
 						<p>
 							We reserve the right to modify or replace these terms at any time.
@@ -212,7 +264,7 @@ function TermsPage() {
 					</section>
 
 					<section>
-						<h2 className="text-2xl font-semibold mb-3">12. Governing Law</h2>
+						<h2 className="text-2xl font-semibold mb-3">13. Governing Law</h2>
 						<p>
 							These terms shall be governed by and construed in accordance with
 							applicable laws, without regard to conflict of law provisions. Any
@@ -222,7 +274,7 @@ function TermsPage() {
 					</section>
 
 					<section>
-						<h2 className="text-2xl font-semibold mb-3">13. Contact Us</h2>
+						<h2 className="text-2xl font-semibold mb-3">14. Contact Us</h2>
 						<p>
 							If you have any questions about these Terms and Conditions, please
 							contact us at{" "}
@@ -242,7 +294,7 @@ function TermsPage() {
 			<footer className="border-t border-border mt-16">
 				<div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
 					<div className="flex items-center gap-2">
-						<BarChart3 className="h-4 w-4" />
+						<Logo className="h-4" />
 						<span>&copy; {new Date().getFullYear()} AutoFin</span>
 					</div>
 					<div className="flex items-center gap-4">
