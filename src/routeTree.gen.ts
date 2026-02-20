@@ -9,21 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedGoogleCallbackRouteImport } from './routes/_authenticated/google-callback'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedTransactionsIndexRouteImport } from './routes/_authenticated/transactions/index'
 import { Route as AuthenticatedInsightsIndexRouteImport } from './routes/_authenticated/insights/index'
 import { Route as AuthenticatedCategoriesIndexRouteImport } from './routes/_authenticated/categories/index'
 import { Route as AuthenticatedTransactionsTransactionIdRouteImport } from './routes/_authenticated/transactions/$transactionId'
 import { Route as AuthenticatedCategoriesCategoryIdRouteImport } from './routes/_authenticated/categories/$categoryId'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -35,10 +48,10 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
@@ -51,6 +64,11 @@ const AuthenticatedGoogleCallbackRoute =
     path: '/google-callback',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedTransactionsIndexRoute =
   AuthenticatedTransactionsIndexRouteImport.update({
     id: '/transactions/',
@@ -83,9 +101,12 @@ const AuthenticatedCategoriesCategoryIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
+  '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/google-callback': typeof AuthenticatedGoogleCallbackRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
@@ -95,11 +116,14 @@ export interface FileRoutesByFullPath {
   '/transactions/': typeof AuthenticatedTransactionsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/google-callback': typeof AuthenticatedGoogleCallbackRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/': typeof AuthenticatedIndexRoute
   '/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
   '/transactions/$transactionId': typeof AuthenticatedTransactionsTransactionIdRoute
   '/categories': typeof AuthenticatedCategoriesIndexRoute
@@ -108,12 +132,15 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/google-callback': typeof AuthenticatedGoogleCallbackRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/categories/$categoryId': typeof AuthenticatedCategoriesCategoryIdRoute
   '/_authenticated/transactions/$transactionId': typeof AuthenticatedTransactionsTransactionIdRoute
   '/_authenticated/categories/': typeof AuthenticatedCategoriesIndexRoute
@@ -125,7 +152,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/privacy'
     | '/signup'
+    | '/terms'
+    | '/dashboard'
     | '/google-callback'
     | '/settings'
     | '/categories/$categoryId'
@@ -135,11 +165,14 @@ export interface FileRouteTypes {
     | '/transactions/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/login'
+    | '/privacy'
     | '/signup'
+    | '/terms'
+    | '/dashboard'
     | '/google-callback'
     | '/settings'
-    | '/'
     | '/categories/$categoryId'
     | '/transactions/$transactionId'
     | '/categories'
@@ -147,12 +180,15 @@ export interface FileRouteTypes {
     | '/transactions'
   id:
     | '__root__'
+    | '/'
     | '/_authenticated'
     | '/login'
+    | '/privacy'
     | '/signup'
+    | '/terms'
+    | '/_authenticated/dashboard'
     | '/_authenticated/google-callback'
     | '/_authenticated/settings'
-    | '/_authenticated/'
     | '/_authenticated/categories/$categoryId'
     | '/_authenticated/transactions/$transactionId'
     | '/_authenticated/categories/'
@@ -161,18 +197,35 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   SignupRoute: typeof SignupRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -189,12 +242,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/': {
-      id: '/_authenticated/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -208,6 +261,13 @@ declare module '@tanstack/react-router' {
       path: '/google-callback'
       fullPath: '/google-callback'
       preLoaderRoute: typeof AuthenticatedGoogleCallbackRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/transactions/': {
@@ -249,9 +309,9 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGoogleCallbackRoute: typeof AuthenticatedGoogleCallbackRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedCategoriesCategoryIdRoute: typeof AuthenticatedCategoriesCategoryIdRoute
   AuthenticatedTransactionsTransactionIdRoute: typeof AuthenticatedTransactionsTransactionIdRoute
   AuthenticatedCategoriesIndexRoute: typeof AuthenticatedCategoriesIndexRoute
@@ -260,9 +320,9 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGoogleCallbackRoute: AuthenticatedGoogleCallbackRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedCategoriesCategoryIdRoute:
     AuthenticatedCategoriesCategoryIdRoute,
   AuthenticatedTransactionsTransactionIdRoute:
@@ -277,9 +337,12 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   SignupRoute: SignupRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

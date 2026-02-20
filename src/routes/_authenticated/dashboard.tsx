@@ -49,7 +49,7 @@ const searchParamsSchema = z.object({
 		.default(defaultRange.endDate ?? ""),
 });
 
-export const Route = createFileRoute("/_authenticated/")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
 	validateSearch: searchParamsSchema,
 	component: AnalyticsDashboard,
 });

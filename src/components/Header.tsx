@@ -11,11 +11,12 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Logo } from "./Logo";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { Button } from "./ui/button";
 
 const NAV_ITEMS = [
-	{ to: "/", icon: Home, label: "Home", exact: true },
+	{ to: "/dashboard", icon: Home, label: "Home", exact: true },
 	{
 		to: "/transactions",
 		icon: CreditCard,
@@ -56,9 +57,9 @@ export default function Header() {
 			{/* Desktop Sidebar */}
 			<aside className="hidden md:flex fixed left-0 top-0 h-full w-64 lg:w-72 flex-col bg-background border-r border-border z-40">
 				{/* Logo */}
-				<div className="p-4 border-b border-border">
-					<Link to="/" className="gap-3">
-						<h1 className="text-3xl font-bold px-4">AutoFin</h1>
+				<div className="p-4 ml-3.5 border-b border-border">
+					<Link to="/dashboard" className="gap-3">
+						<Logo className="h-8" />
 					</Link>
 				</div>
 
@@ -111,8 +112,8 @@ export default function Header() {
 
 			{/* Mobile Header */}
 			<header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-background border-b border-border z-50 flex items-center justify-between px-4">
-				<Link to="/">
-					<h1 className="px-4 text-3xl font-bold">AutoFin</h1>
+				<Link to="/dashboard">
+					<Logo className="h-7" />
 				</Link>
 				<div className="flex items-center gap-2">
 					<ThemeSwitcher />

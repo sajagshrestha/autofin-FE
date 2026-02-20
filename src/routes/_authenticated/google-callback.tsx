@@ -33,7 +33,7 @@ function GoogleCallbackPage() {
 
 	useEffect(() => {
 		if (data?.success) {
-			navigate({ to: "/" });
+			navigate({ to: "/dashboard" });
 		}
 	}, [data, navigate]);
 

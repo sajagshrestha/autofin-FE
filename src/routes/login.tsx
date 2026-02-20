@@ -37,7 +37,7 @@ function LoginPage() {
 			if (error) {
 				setServerError(error.message);
 			} else {
-				navigate({ to: "/" });
+				navigate({ to: "/dashboard" });
 			}
 		},
 		validators: {
