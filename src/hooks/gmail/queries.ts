@@ -100,3 +100,19 @@ export function useGetGmailHistory(params: {
 export function useGetGmailLabels() {
 	return $api.useQuery("get", GMAIL_ENDPOINTS.LABELS, {});
 }
+
+/**
+ * Fetches the current sender filter config (emails being filtered)
+ * @param options.enabled - When false, the query will not run (e.g. when Gmail is not connected)
+ */
+export function useGetSenderFilters(options?: { enabled?: boolean }) {
+	return $api.useQuery("get", GMAIL_ENDPOINTS.SENDER_FILTERS, {}, options);
+}
+
+/**
+ * Fetches the Gmail watch status (whether watch is active, expiration, etc.)
+ * @param options.enabled - When false, the query will not run (e.g. when Gmail is not connected or filters not set)
+ */
+export function useGetGmailWatchStatus(options?: { enabled?: boolean }) {
+	return $api.useQuery("get", GMAIL_ENDPOINTS.WATCH_STATUS, {}, options);
+}

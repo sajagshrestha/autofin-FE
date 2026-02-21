@@ -991,6 +991,327 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/gmail/watch/labels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Configure watch labels
+         * @description Set which Gmail labels to monitor. Provide createLabelName to create a new label, or labelIds to use existing labels.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @description Label IDs to use for monitoring (validate they exist) */
+                        labelIds?: string[];
+                        /**
+                         * @description Create a label with this name and use it for monitoring
+                         * @example Autofin
+                         */
+                        createLabelName?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Labels configured successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Label IDs being used for monitoring */
+                            labelIds: string[];
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+                /** @description No Gmail OAuth token found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+                /** @description Failed to configure labels */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/gmail/filters/senders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get sender filter
+         * @description Returns the current sender filter config (emails being filtered).
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Filter config retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Gmail filter ID (empty if filter was deleted) */
+                            filterId: string;
+                            /** @description Sender emails being filtered */
+                            emails: string[];
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+                /** @description No Gmail OAuth token found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+                /** @description Failed to get filter config */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Set sender filter
+         * @description Create a Gmail filter that auto-applies the monitor label to emails from the given sender addresses.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Sender email addresses to filter (e.g. bank alerts)
+                         * @example [
+                         *       "alerts@bank.com",
+                         *       "noreply@anotherbank.com"
+                         *     ]
+                         */
+                        emails: string[];
+                    };
+                };
+            };
+            responses: {
+                /** @description Filter created successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Gmail filter ID (empty if filter was deleted) */
+                            filterId: string;
+                            /** @description Sender emails being filtered */
+                            emails: string[];
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+                /** @description No Gmail OAuth token found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+                /** @description Failed to create filter */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        /**
+         * Delete sender filter
+         * @description Removes the Gmail sender filter and clears stored config.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Filter deleted successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                            message?: string;
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+                /** @description No Gmail OAuth token found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+                /** @description Failed to delete filter */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                            message?: string;
+                            details?: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/gmail/messages": {
         parameters: {
             query?: never;
