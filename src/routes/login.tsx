@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
+import { GoogleIcon } from "@/components/GoogleIcon";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
 import { type LoginFormData, loginSchema } from "@/schemas/auth";
 
@@ -22,7 +24,8 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
 	const [serverError, setServerError] = useState<string | null>(null);
-	const { signIn } = useAuth();
+	const [googleLoading, setGoogleLoading] = useState(false);
+	const { signIn, signInWithGoogle } = useAuth();
 	const navigate = useNavigate();
 
 	const form = useForm({
@@ -137,6 +140,34 @@ function LoginPage() {
 							disabled={form.state.isSubmitting}
 						>
 							{form.state.isSubmitting ? "Signing in..." : "Sign In"}
+						</Button>
+						<div className="relative w-full">
+							<div className="absolute inset-0 flex items-center">
+								<Separator className="w-full" />
+							</div>
+							<div className="relative flex justify-center text-xs uppercase">
+								<span className="bg-card px-2 text-muted-foreground">
+									Or continue with
+								</span>
+							</div>
+						</div>
+						<Button
+							type="button"
+							variant="outline"
+							className="w-full"
+							disabled={googleLoading}
+							onClick={async () => {
+								setGoogleLoading(true);
+								setServerError(null);
+								const { error } = await signInWithGoogle();
+								if (error) {
+									setServerError(error.message);
+									setGoogleLoading(false);
+								}
+							}}
+						>
+							<GoogleIcon className="mr-2 h-4 w-4" />
+							{googleLoading ? "Signing in..." : "Continue with Google"}
 						</Button>
 						<p className="text-center text-sm text-muted-foreground">
 							Don't have an account?{" "}
