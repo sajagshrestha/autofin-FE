@@ -1,11 +1,4 @@
 import {
-	Combobox,
-	ComboboxButton,
-	ComboboxInput,
-	ComboboxOption,
-	ComboboxOptions,
-} from "@headlessui/react";
-import {
 	createFileRoute,
 	Link,
 	Outlet,
@@ -19,8 +12,6 @@ import type {
 } from "@tanstack/react-table";
 import { format } from "date-fns";
 import {
-	Check,
-	ChevronsUpDown,
 	Eye,
 	MessageSquarePlus,
 	MoreVertical,
@@ -62,13 +53,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { NoData } from "@/components/ui/no-data";
 import { Search } from "@/components/ui/search";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import {
 	Sheet,
 	SheetContent,
@@ -93,7 +78,7 @@ const defaultRange = getDateRangeForPeriod("daily");
 const ALL_CATEGORIES_FILTER = "all";
 const UNCATEGORIZED_FILTER = "uncategorized";
 type CategoryFilterOption = {
-	id: string;
+	value: string;
 	label: string;
 	searchLabel: string;
 };
@@ -138,7 +123,6 @@ function TransactionsPage() {
 	const [categoryFilter, setCategoryFilter] = useState<string>(
 		ALL_CATEGORIES_FILTER,
 	);
-	const [categoryQuery, setCategoryQuery] = useState("");
 	const [editingTransaction, setEditingTransaction] =
 		useState<Transaction | null>(null);
 	const [deletingTransaction, setDeletingTransaction] =
@@ -197,36 +181,22 @@ function TransactionsPage() {
 	const categoryFilterOptions = useMemo<CategoryFilterOption[]>(
 		() => [
 			{
-				id: ALL_CATEGORIES_FILTER,
+				value: ALL_CATEGORIES_FILTER,
 				label: "All categories",
 				searchLabel: "all categories",
 			},
 			{
-				id: UNCATEGORIZED_FILTER,
+				value: UNCATEGORIZED_FILTER,
 				label: "Uncategorized",
 				searchLabel: "uncategorized",
 			},
 			...sortedCategories.map((category) => ({
-				id: category.id,
+				value: category.id,
 				label: `${category.icon ? `${category.icon} ` : ""}${category.name}`,
 				searchLabel: `${category.name} ${category.icon ?? ""}`.toLowerCase(),
 			})),
 		],
 		[sortedCategories],
-	);
-	const visibleCategoryOptions = useMemo(() => {
-		const normalizedQuery = categoryQuery.trim().toLowerCase();
-		if (!normalizedQuery) return categoryFilterOptions;
-
-		return categoryFilterOptions.filter((option) =>
-			option.searchLabel.includes(normalizedQuery),
-		);
-	}, [categoryFilterOptions, categoryQuery]);
-	const selectedCategoryOption = useMemo(
-		() =>
-			categoryFilterOptions.find((option) => option.id === categoryFilter) ??
-			categoryFilterOptions[0],
-		[categoryFilter, categoryFilterOptions],
 	);
 	const filteredTransactions = useMemo(() => {
 		if (categoryFilter === ALL_CATEGORIES_FILTER) {
@@ -249,10 +219,8 @@ function TransactionsPage() {
 			? "Get started by adding a transaction or creating one from SMS."
 			: "Try a different category filter, or add/create a transaction.";
 
-	const handleCategoryFilterChange = useCallback((value: string | null) => {
-		if (!value) return;
+	const handleCategoryFilterChange = useCallback((value: string) => {
 		setCategoryFilter(value);
-		setCategoryQuery("");
 		setPagination((prev) => ({
 			...prev,
 			pageIndex: 0,
@@ -279,9 +247,6 @@ function TransactionsPage() {
 	);
 	const handleFiltersSheetOpenChange = useCallback((open: boolean) => {
 		setFiltersSheetOpen(open);
-		if (!open) {
-			setCategoryQuery("");
-		}
 	}, []);
 	const clearFilters = useCallback(() => {
 		handleCategoryFilterChange(ALL_CATEGORIES_FILTER);
@@ -402,41 +367,15 @@ function TransactionsPage() {
 	}, [mobilePageIndex, mobileSortedTransactions, pagination.pageSize]);
 
 	const renderCategoryFilterCombobox = (widthClassName: string) => (
-		<Combobox
+		<SearchableSelect
+			options={categoryFilterOptions}
 			value={categoryFilter}
-			onChange={handleCategoryFilterChange}
-			immediate
-		>
-			<div className={`relative ${widthClassName}`}>
-				<ComboboxInput
-					className="h-8 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-					placeholder="Filter by category"
-					displayValue={() => selectedCategoryOption?.label ?? ""}
-					onChange={(event) => setCategoryQuery(event.target.value)}
-				/>
-				<ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
-					<ChevronsUpDown className="h-4 w-4" />
-				</ComboboxButton>
-				<ComboboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md empty:invisible">
-					{visibleCategoryOptions.length === 0 ? (
-						<div className="px-2 py-1.5 text-sm text-muted-foreground">
-							No categories found
-						</div>
-					) : (
-						visibleCategoryOptions.map((option) => (
-							<ComboboxOption
-								key={option.id}
-								value={option.id}
-								className="group flex cursor-pointer items-center justify-between rounded-sm px-2 py-1.5 text-sm data-[focus]:bg-accent data-[focus]:text-accent-foreground"
-							>
-								<span className="truncate">{option.label}</span>
-								<Check className="h-4 w-4 opacity-0 group-data-[selected]:opacity-100" />
-							</ComboboxOption>
-						))
-					)}
-				</ComboboxOptions>
-			</div>
-		</Combobox>
+			onValueChange={handleCategoryFilterChange}
+			placeholder="Filter by category"
+			searchPlaceholder="Search categories..."
+			emptyMessage="No categories found"
+			className={widthClassName}
+		/>
 	);
 	const renderTransactionActions = (
 		transaction: Transaction,
@@ -856,21 +795,18 @@ function TransactionsPage() {
 							</div>
 							<div className="space-y-2">
 								<p className="text-sm font-medium">Sort by</p>
-								<Select
+								<SearchableSelect
+									options={sortOptions.map((o) => ({
+										value: o.value,
+										label: o.label,
+									}))}
 									value={sorting[0]?.id ?? "none"}
 									onValueChange={handleSortOptionChange}
-								>
-									<SelectTrigger className="w-full">
-										<SelectValue placeholder="Sort by" />
-									</SelectTrigger>
-									<SelectContent>
-										{sortOptions.map((option) => (
-											<SelectItem key={option.value} value={option.value}>
-												{option.label}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
+									placeholder="Sort by"
+									searchPlaceholder="Search sort options..."
+									emptyMessage="No sort options found"
+									className="w-full"
+								/>
 							</div>
 							<div className="space-y-2">
 								<p className="text-sm font-medium">Direction</p>
