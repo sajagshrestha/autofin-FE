@@ -10,6 +10,11 @@ export type UpdateTransactionBody = NonNullable<
 >["content"]["application/json"];
 
 /** Form values for editing a transaction. */
+export type CreateTransactionBody = NonNullable<
+	paths[typeof TRANSACTIONS_ENDPOINTS.LIST]["post"]["requestBody"]
+>["content"]["application/json"];
+
+/** Form values for editing a transaction (subset of fields + amount for display). */
 export type EditTransactionFormValues = {
 	merchant: string;
 	categoryId: string;
@@ -24,5 +29,31 @@ export function mapEditFormToUpdateBody(
 		merchant: values.merchant || undefined,
 		categoryId: values.categoryId || undefined,
 		remarks: values.remarks || undefined,
+	};
+}
+
+/** Form values for creating a manual transaction. */
+export type CreateTransactionFormValues = {
+	amount: string;
+	type: "debit" | "credit";
+	categoryId: string;
+	merchant: string;
+	remarks: string;
+	transactionDate: string;
+};
+
+/** Map create form values to API body (trim + convert primitives). */
+export function mapCreateFormToCreateBody(
+	values: CreateTransactionFormValues,
+): CreateTransactionBody {
+	return {
+		amount: Number(values.amount),
+		type: values.type,
+		categoryId: values.categoryId || undefined,
+		merchant: values.merchant.trim() || undefined,
+		remarks: values.remarks.trim() || undefined,
+		transactionDate: values.transactionDate
+			? new Date(values.transactionDate).toISOString()
+			: undefined,
 	};
 }

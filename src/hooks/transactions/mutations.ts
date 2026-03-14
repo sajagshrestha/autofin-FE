@@ -39,6 +39,18 @@ export function useDeleteTransaction() {
 }
 
 /**
+ * Creates a manual transaction
+ */
+export function useCreateTransaction() {
+	const queryClient = useQueryClient();
+	return $api.useMutation(
+		"post",
+		TRANSACTIONS_ENDPOINTS.LIST,
+		transactionsInvalidateOnSuccess(queryClient),
+	);
+}
+
+/**
  * Creates a transaction from an SMS message using AI extraction
  */
 export function useCreateTransactionFromSms() {
