@@ -8,7 +8,6 @@ import {
 import { useForm } from "@tanstack/react-form";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useMemo, useState } from "react";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -18,14 +17,19 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import {
+	Field,
+	FieldError,
+	FieldGroup,
+	FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import type { Category, Transaction } from "@/hooks";
 import {
 	mapEditFormToUpdateBody,
 	type UpdateTransactionBody,
 } from "@/hooks/transactions/types";
-import { getFirstFieldError } from "@/lib/form-helpers";
+import { editTransactionSchema } from "@/schemas/transaction";
 
 type CategoryOption = {
 	id: string;
@@ -59,6 +63,9 @@ export function EditTransactionForm({
 		},
 		onSubmit: async ({ value }) => {
 			onSubmit(mapEditFormToUpdateBody(value));
+		},
+		validators: {
+			onChange: editTransactionSchema,
 		},
 	});
 	const [categoryQuery, setCategoryQuery] = useState("");
@@ -103,101 +110,102 @@ export function EditTransactionForm({
 						e.stopPropagation();
 						form.handleSubmit();
 					}}
-					className="space-y-4"
 				>
-					<form.Field
-						name="merchant"
-						validators={{
-							onChange: z.string().min(1, "Merchant name is required"),
-						}}
-					>
-						{(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Merchant</Label>
-								<Input
-									id={field.name}
-									name={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-								{field.state.meta.errors ? (
-									<em role="alert" className="text-destructive text-xs">
-										{getFirstFieldError(field.state.meta.errors)}
-									</em>
-								) : null}
-							</div>
-						)}
-					</form.Field>
-
-					<form.Field name="categoryId">
-						{(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Category</Label>
-								<Combobox
-									value={field.state.value}
-									onChange={(value: string | null) => {
-										if (value == null) return;
-										field.handleChange(value);
-										setCategoryQuery("");
-									}}
-									immediate
-								>
-									<div className="relative">
-										<ComboboxInput
+					<FieldGroup>
+						<form.Field name="merchant">
+							{(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field data-invalid={isInvalid}>
+										<FieldLabel htmlFor={field.name}>Merchant</FieldLabel>
+										<Input
 											id={field.name}
 											name={field.name}
-											className="h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-											placeholder="Select a category"
-											displayValue={() =>
-												categoryOptions.find(
-													(option) => option.id === field.state.value,
-												)?.label ?? ""
-											}
-											onChange={(event) => setCategoryQuery(event.target.value)}
+											value={field.state.value}
 											onBlur={field.handleBlur}
+											onChange={(e) => field.handleChange(e.target.value)}
+											aria-invalid={isInvalid}
 										/>
-										<ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
-											<ChevronsUpDown className="h-4 w-4" />
-										</ComboboxButton>
-										<ComboboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md empty:invisible">
-											{visibleCategoryOptions.length === 0 ? (
-												<div className="px-2 py-1.5 text-sm text-muted-foreground">
-													No categories found
-												</div>
-											) : (
-												visibleCategoryOptions.map((option) => (
-													<ComboboxOption
-														key={option.id || "uncategorized"}
-														value={option.id}
-														className="group flex cursor-pointer items-center justify-between rounded-sm px-2 py-1.5 text-sm data-[focus]:bg-accent data-[focus]:text-accent-foreground"
-													>
-														<span className="truncate">{option.label}</span>
-														<Check className="h-4 w-4 opacity-0 group-data-[selected]:opacity-100" />
-													</ComboboxOption>
-												))
-											)}
-										</ComboboxOptions>
-									</div>
-								</Combobox>
-							</div>
-						)}
-					</form.Field>
+										{isInvalid && (
+											<FieldError errors={field.state.meta.errors} />
+										)}
+									</Field>
+								);
+							}}
+						</form.Field>
 
-					<form.Field name="remarks">
-						{(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Remarks</Label>
-								<Input
-									id={field.name}
-									name={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-							</div>
-						)}
-					</form.Field>
+						<form.Field name="categoryId">
+							{(field) => (
+								<Field>
+									<FieldLabel htmlFor={field.name}>Category</FieldLabel>
+									<Combobox
+										value={field.state.value}
+										onChange={(value: string | null) => {
+											if (value == null) return;
+											field.handleChange(value);
+											setCategoryQuery("");
+										}}
+										immediate
+									>
+										<div className="relative">
+											<ComboboxInput
+												id={field.name}
+												name={field.name}
+												className="h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												placeholder="Select a category"
+												displayValue={() =>
+													categoryOptions.find(
+														(option) => option.id === field.state.value,
+													)?.label ?? ""
+												}
+												onChange={(event) =>
+													setCategoryQuery(event.target.value)
+												}
+												onBlur={field.handleBlur}
+											/>
+											<ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
+												<ChevronsUpDown className="h-4 w-4" />
+											</ComboboxButton>
+											<ComboboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md empty:invisible">
+												{visibleCategoryOptions.length === 0 ? (
+													<div className="px-2 py-1.5 text-sm text-muted-foreground">
+														No categories found
+													</div>
+												) : (
+													visibleCategoryOptions.map((option) => (
+														<ComboboxOption
+															key={option.id || "uncategorized"}
+															value={option.id}
+															className="group flex cursor-pointer items-center justify-between rounded-sm px-2 py-1.5 text-sm data-[focus]:bg-accent data-[focus]:text-accent-foreground"
+														>
+															<span className="truncate">{option.label}</span>
+															<Check className="h-4 w-4 opacity-0 group-data-[selected]:opacity-100" />
+														</ComboboxOption>
+													))
+												)}
+											</ComboboxOptions>
+										</div>
+									</Combobox>
+								</Field>
+							)}
+						</form.Field>
+
+						<form.Field name="remarks">
+							{(field) => (
+								<Field>
+									<FieldLabel htmlFor={field.name}>Remarks</FieldLabel>
+									<Input
+										id={field.name}
+										name={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+									/>
+								</Field>
+							)}
+						</form.Field>
+					</FieldGroup>
 
 					<DialogFooter className="pt-4">
 						<Button type="button" variant="outline" onClick={onCancel}>
