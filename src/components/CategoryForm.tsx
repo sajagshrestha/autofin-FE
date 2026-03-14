@@ -1,5 +1,4 @@
 import { useForm } from "@tanstack/react-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -9,10 +8,15 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import {
+	Field,
+	FieldError,
+	FieldGroup,
+	FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import type { Category } from "@/hooks";
-import { getFirstFieldError } from "@/lib/form-helpers";
+import { categorySchema } from "@/schemas/category";
 
 export type CategoryFormBody = { name: string; icon?: string };
 
@@ -44,6 +48,9 @@ export function CategoryForm({
 				icon: value.icon?.trim() || undefined,
 			});
 		},
+		validators: {
+			onChange: categorySchema,
+		},
 	});
 
 	return (
@@ -65,49 +72,48 @@ export function CategoryForm({
 						e.stopPropagation();
 						form.handleSubmit();
 					}}
-					className="space-y-4"
 				>
-					<form.Field
-						name="name"
-						validators={{
-							onChange: z.string().min(1, "Name is required"),
-						}}
-					>
-						{(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Name</Label>
-								<Input
-									id={field.name}
-									name={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="e.g. Groceries"
-								/>
-								{field.state.meta.errors?.length ? (
-									<em role="alert" className="text-destructive text-xs">
-										{getFirstFieldError(field.state.meta.errors)}
-									</em>
-								) : null}
-							</div>
-						)}
-					</form.Field>
+					<FieldGroup>
+						<form.Field name="name">
+							{(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field data-invalid={isInvalid}>
+										<FieldLabel htmlFor={field.name}>Name</FieldLabel>
+										<Input
+											id={field.name}
+											name={field.name}
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(e) => field.handleChange(e.target.value)}
+											placeholder="e.g. Groceries"
+											aria-invalid={isInvalid}
+										/>
+										{isInvalid && (
+											<FieldError errors={field.state.meta.errors} />
+										)}
+									</Field>
+								);
+							}}
+						</form.Field>
 
-					<form.Field name="icon">
-						{(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Icon (optional)</Label>
-								<Input
-									id={field.name}
-									name={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="e.g. 🛒"
-								/>
-							</div>
-						)}
-					</form.Field>
+						<form.Field name="icon">
+							{(field) => (
+								<Field>
+									<FieldLabel htmlFor={field.name}>Icon (optional)</FieldLabel>
+									<Input
+										id={field.name}
+										name={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="e.g. 🛒"
+									/>
+								</Field>
+							)}
+						</form.Field>
+					</FieldGroup>
 
 					<DialogFooter className="pt-4">
 						<Button type="button" variant="outline" onClick={onCancel}>
