@@ -25,6 +25,7 @@ import {
 	mapEditFormToUpdateBody,
 	type UpdateTransactionBody,
 } from "@/hooks/transactions/types";
+import { getFirstFieldError } from "@/lib/form-helpers";
 
 type CategoryOption = {
 	id: string;
@@ -122,7 +123,7 @@ export function EditTransactionForm({
 								/>
 								{field.state.meta.errors ? (
 									<em role="alert" className="text-destructive text-xs">
-										{field.state.meta.errors.join(", ")}
+										{getFirstFieldError(field.state.meta.errors)}
 									</em>
 								) : null}
 							</div>
