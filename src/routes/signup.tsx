@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
+import { getFirstFieldError } from "@/lib/form-helpers";
 import { type SignupFormData, signupSchema } from "@/schemas/auth";
 
 export const Route = createFileRoute("/signup")({
@@ -124,7 +125,7 @@ function SignupPage() {
 									{field.state.meta.isTouched &&
 										field.state.meta.errors.length > 0 && (
 											<p className="text-sm text-destructive">
-												{field.state.meta.errors.join(", ")}
+												{getFirstFieldError(field.state.meta.errors)}
 											</p>
 										)}
 								</div>
@@ -155,7 +156,7 @@ function SignupPage() {
 									{field.state.meta.isTouched &&
 										field.state.meta.errors.length > 0 && (
 											<p className="text-sm text-destructive">
-												{field.state.meta.errors.join(", ")}
+												{getFirstFieldError(field.state.meta.errors)}
 											</p>
 										)}
 								</div>
@@ -193,7 +194,7 @@ function SignupPage() {
 									{field.state.meta.isTouched &&
 										field.state.meta.errors.length > 0 && (
 											<p className="text-sm text-destructive">
-												{field.state.meta.errors.join(", ")}
+												{getFirstFieldError(field.state.meta.errors)}
 											</p>
 										)}
 								</div>

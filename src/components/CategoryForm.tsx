@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Category } from "@/hooks";
+import { getFirstFieldError } from "@/lib/form-helpers";
 
 export type CategoryFormBody = { name: string; icon?: string };
 
@@ -85,7 +86,7 @@ export function CategoryForm({
 								/>
 								{field.state.meta.errors?.length ? (
 									<em role="alert" className="text-destructive text-xs">
-										{field.state.meta.errors.join(", ")}
+										{getFirstFieldError(field.state.meta.errors)}
 									</em>
 								) : null}
 							</div>

@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getFirstFieldError } from "@/lib/form-helpers";
 
 const smsBodySchema = z
 	.string()
@@ -88,7 +89,7 @@ export function CreateTransactionFromSmsForm({
 								/>
 								{field.state.meta.errors ? (
 									<em role="alert" className="text-destructive text-xs">
-										{field.state.meta.errors.join(", ")}
+										{getFirstFieldError(field.state.meta.errors)}
 									</em>
 								) : null}
 							</div>
