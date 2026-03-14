@@ -9,12 +9,11 @@ export type UpdateTransactionBody = NonNullable<
 	paths[typeof TRANSACTIONS_ENDPOINTS.DETAIL]["patch"]["requestBody"]
 >["content"]["application/json"];
 
-/** Form values for editing a transaction (subset of fields + amount for display). */
+/** Form values for editing a transaction. */
 export type EditTransactionFormValues = {
 	merchant: string;
 	categoryId: string;
 	remarks: string;
-	amount: string;
 };
 
 /** Map form values to API update body (null/empty → undefined for optional fields). */
