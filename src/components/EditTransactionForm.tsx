@@ -1,4 +1,13 @@
+import {
+	Combobox,
+	ComboboxButton,
+	ComboboxInput,
+	ComboboxOption,
+	ComboboxOptions,
+} from "@headlessui/react";
 import { useForm } from "@tanstack/react-form";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,18 +20,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import type { Category, Transaction } from "@/hooks";
 import {
 	mapEditFormToUpdateBody,
 	type UpdateTransactionBody,
 } from "@/hooks/transactions/types";
+
+type CategoryOption = {
+	id: string;
+	label: string;
+	searchLabel: string;
+};
 
 export function EditTransactionForm({
 	transaction,
@@ -52,6 +60,32 @@ export function EditTransactionForm({
 			onSubmit(mapEditFormToUpdateBody(value));
 		},
 	});
+	const [categoryQuery, setCategoryQuery] = useState("");
+	const categoryOptions = useMemo<CategoryOption[]>(
+		() => [
+			{
+				id: "",
+				label: "Uncategorized",
+				searchLabel: "uncategorized no category",
+			},
+			...[...categories]
+				.sort((a, b) => a.name.localeCompare(b.name))
+				.map((category) => ({
+					id: category.id,
+					label: `${category.icon ? `${category.icon} ` : ""}${category.name}`,
+					searchLabel: `${category.name} ${category.icon ?? ""}`.toLowerCase(),
+				})),
+		],
+		[categories],
+	);
+	const visibleCategoryOptions = useMemo(() => {
+		const normalizedQuery = categoryQuery.trim().toLowerCase();
+		if (!normalizedQuery) return categoryOptions;
+
+		return categoryOptions.filter((option) =>
+			option.searchLabel.includes(normalizedQuery),
+		);
+	}, [categoryOptions, categoryQuery]);
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
@@ -99,24 +133,52 @@ export function EditTransactionForm({
 						{(field) => (
 							<div className="space-y-2">
 								<Label htmlFor={field.name}>Category</Label>
-								<Select
+								<Combobox
 									value={field.state.value}
-									onValueChange={field.handleChange}
+									onChange={(value: string | null) => {
+										if (value == null) return;
+										field.handleChange(value);
+										setCategoryQuery("");
+									}}
+									immediate
 								>
-									<SelectTrigger className="w-full">
-										<SelectValue placeholder="Select a category" />
-									</SelectTrigger>
-									<SelectContent>
-										{categories.map((category) => (
-											<SelectItem key={category.id} value={category.id}>
-												{category.icon && (
-													<span className="mr-1 shrink-0">{category.icon}</span>
-												)}
-												{category.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
+									<div className="relative">
+										<ComboboxInput
+											id={field.name}
+											name={field.name}
+											className="h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+											placeholder="Select a category"
+											displayValue={() =>
+												categoryOptions.find(
+													(option) => option.id === field.state.value,
+												)?.label ?? ""
+											}
+											onChange={(event) => setCategoryQuery(event.target.value)}
+											onBlur={field.handleBlur}
+										/>
+										<ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
+											<ChevronsUpDown className="h-4 w-4" />
+										</ComboboxButton>
+										<ComboboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md empty:invisible">
+											{visibleCategoryOptions.length === 0 ? (
+												<div className="px-2 py-1.5 text-sm text-muted-foreground">
+													No categories found
+												</div>
+											) : (
+												visibleCategoryOptions.map((option) => (
+													<ComboboxOption
+														key={option.id || "uncategorized"}
+														value={option.id}
+														className="group flex cursor-pointer items-center justify-between rounded-sm px-2 py-1.5 text-sm data-[focus]:bg-accent data-[focus]:text-accent-foreground"
+													>
+														<span className="truncate">{option.label}</span>
+														<Check className="h-4 w-4 opacity-0 group-data-[selected]:opacity-100" />
+													</ComboboxOption>
+												))
+											)}
+										</ComboboxOptions>
+									</div>
+								</Combobox>
 							</div>
 						)}
 					</form.Field>

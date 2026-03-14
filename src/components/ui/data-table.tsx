@@ -50,6 +50,7 @@ interface DataTableProps<TData, TValue> {
 	sorting?: {
 		state: SortingState;
 		onSortingChange: OnChangeFn<SortingState>;
+		manualSorting?: boolean;
 	};
 	columnPinning?: {
 		state: ColumnPinningState;
@@ -108,7 +109,7 @@ export function DataTable<TData, TValue>({
 			...(search && { globalFilter: search.value }),
 		},
 		manualPagination: !!pagination,
-		manualSorting: !!sorting,
+		manualSorting: sorting?.manualSorting ?? false,
 		manualExpanding: expanding?.manualExpanding || false,
 		enableColumnPinning: !!columnPinning,
 		// Pagination options

@@ -1,4 +1,11 @@
 import {
+	Combobox,
+	ComboboxButton,
+	ComboboxInput,
+	ComboboxOption,
+	ComboboxOptions,
+} from "@headlessui/react";
+import {
 	createFileRoute,
 	Link,
 	Outlet,
@@ -11,13 +18,15 @@ import type {
 } from "@tanstack/react-table";
 import { format } from "date-fns";
 import {
+	Check,
+	ChevronsUpDown,
 	Eye,
 	MessageSquarePlus,
 	MoreVertical,
 	Pencil,
 	Trash2,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { CreateTransactionFromSmsForm } from "@/components/CreateTransactionFromSmsForm";
@@ -57,6 +66,13 @@ import { useGetAllTransactions } from "@/hooks/transactions/queries";
 import { formatCurrency } from "@/lib/formatCurrency";
 
 const defaultRange = getDateRangeForPeriod("daily");
+const ALL_CATEGORIES_FILTER = "all";
+const UNCATEGORIZED_FILTER = "uncategorized";
+type CategoryFilterOption = {
+	id: string;
+	label: string;
+	searchLabel: string;
+};
 
 const searchParamsSchema = z.object({
 	period: z
@@ -86,6 +102,10 @@ function TransactionsPage() {
 		pageIndex: 0,
 		pageSize: 10,
 	});
+	const [categoryFilter, setCategoryFilter] = useState<string>(
+		ALL_CATEGORIES_FILTER,
+	);
+	const [categoryQuery, setCategoryQuery] = useState("");
 	const [editingTransaction, setEditingTransaction] =
 		useState<Transaction | null>(null);
 	const [deletingTransaction, setDeletingTransaction] =
@@ -133,14 +153,80 @@ function TransactionsPage() {
 
 	const transactions = (transactionsData?.transactions as Transaction[]) || [];
 	const categories = categoriesData?.categories || [];
+	const sortedCategories = useMemo(
+		() => [...categories].sort((a, b) => a.name.localeCompare(b.name)),
+		[categories],
+	);
+	const categoryFilterOptions = useMemo<CategoryFilterOption[]>(
+		() => [
+			{
+				id: ALL_CATEGORIES_FILTER,
+				label: "All categories",
+				searchLabel: "all categories",
+			},
+			{
+				id: UNCATEGORIZED_FILTER,
+				label: "Uncategorized",
+				searchLabel: "uncategorized",
+			},
+			...sortedCategories.map((category) => ({
+				id: category.id,
+				label: `${category.icon ? `${category.icon} ` : ""}${category.name}`,
+				searchLabel: `${category.name} ${category.icon ?? ""}`.toLowerCase(),
+			})),
+		],
+		[sortedCategories],
+	);
+	const visibleCategoryOptions = useMemo(() => {
+		const normalizedQuery = categoryQuery.trim().toLowerCase();
+		if (!normalizedQuery) return categoryFilterOptions;
+
+		return categoryFilterOptions.filter((option) =>
+			option.searchLabel.includes(normalizedQuery),
+		);
+	}, [categoryFilterOptions, categoryQuery]);
+	const selectedCategoryOption = useMemo(
+		() =>
+			categoryFilterOptions.find((option) => option.id === categoryFilter) ??
+			categoryFilterOptions[0],
+		[categoryFilter, categoryFilterOptions],
+	);
+	const filteredTransactions = useMemo(() => {
+		if (categoryFilter === ALL_CATEGORIES_FILTER) {
+			return transactions;
+		}
+		if (categoryFilter === UNCATEGORIZED_FILTER) {
+			return transactions.filter(
+				(transaction) => !transaction.category?.id && !transaction.categoryId,
+			);
+		}
+
+		return transactions.filter(
+			(transaction) =>
+				transaction.category?.id === categoryFilter ||
+				transaction.categoryId === categoryFilter,
+		);
+	}, [transactions, categoryFilter]);
+
+	const handleCategoryFilterChange = useCallback((value: string | null) => {
+		if (!value) return;
+		setCategoryFilter(value);
+		setCategoryQuery("");
+		setPagination((prev) => ({
+			...prev,
+			pageIndex: 0,
+		}));
+	}, []);
 
 	const columns: ColumnDef<Transaction>[] = [
 		{
-			accessorKey: "transactionDate",
+			id: "transactionDate",
+			accessorFn: (row) =>
+				row.transactionDate ? new Date(row.transactionDate).getTime() : 0,
 			header: "Date & time",
 			cell: ({ row }) => {
-				const date = row.getValue("transactionDate");
-				return date ? format(new Date(date as string), "PPp") : "N/A";
+				const date = row.original.transactionDate;
+				return date ? format(new Date(date), "PPp") : "N/A";
 			},
 		},
 		{
@@ -153,7 +239,8 @@ function TransactionsPage() {
 			),
 		},
 		{
-			accessorKey: "category",
+			id: "category",
+			accessorFn: (row) => row.category?.name || "Uncategorized",
 			header: "Category",
 			cell: ({ row }) => {
 				const category = row.original.category;
@@ -199,6 +286,8 @@ function TransactionsPage() {
 		{
 			accessorKey: "amount",
 			header: () => <div className="text-right">Amount</div>,
+			sortingFn: (rowA, rowB, columnId) =>
+				Number(rowA.getValue(columnId)) - Number(rowB.getValue(columnId)),
 			cell: ({ row }) => {
 				const amount = parseFloat(row.getValue("amount") || "0");
 				const formatted = formatCurrency(
@@ -308,7 +397,7 @@ function TransactionsPage() {
 				</div>
 				<DataTable
 					columns={columns}
-					data={transactions}
+					data={filteredTransactions}
 					isLoading={isLoading}
 					sorting={{
 						state: sorting,
@@ -318,7 +407,7 @@ function TransactionsPage() {
 						state: pagination,
 						options: {
 							onPaginationChange: setPagination,
-							rowCount: transactions.length,
+							rowCount: filteredTransactions.length,
 						},
 					}}
 					search={{
@@ -326,20 +415,60 @@ function TransactionsPage() {
 						onChange: setGlobalFilter,
 					}}
 					headerButtons={
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => setSmsDialogOpen(true)}
-						>
-							<MessageSquarePlus className="mr-2 h-4 w-4" />
-							Create from SMS
-						</Button>
+						<div className="flex items-center gap-2">
+							<Combobox
+								value={categoryFilter}
+								onChange={handleCategoryFilterChange}
+								immediate
+							>
+								<div className="relative w-[220px]">
+									<ComboboxInput
+										className="h-8 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+										placeholder="Filter by category"
+										displayValue={() => selectedCategoryOption?.label ?? ""}
+										onChange={(event) => setCategoryQuery(event.target.value)}
+									/>
+									<ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2 text-muted-foreground">
+										<ChevronsUpDown className="h-4 w-4" />
+									</ComboboxButton>
+									<ComboboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md empty:invisible">
+										{visibleCategoryOptions.length === 0 ? (
+											<div className="px-2 py-1.5 text-sm text-muted-foreground">
+												No categories found
+											</div>
+										) : (
+											visibleCategoryOptions.map((option) => (
+												<ComboboxOption
+													key={option.id}
+													value={option.id}
+													className="group flex cursor-pointer items-center justify-between rounded-sm px-2 py-1.5 text-sm data-[focus]:bg-accent data-[focus]:text-accent-foreground"
+												>
+													<span className="truncate">{option.label}</span>
+													<Check className="h-4 w-4 opacity-0 group-data-[selected]:opacity-100" />
+												</ComboboxOption>
+											))
+										)}
+									</ComboboxOptions>
+								</div>
+							</Combobox>
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => setSmsDialogOpen(true)}
+							>
+								<MessageSquarePlus className="mr-2 h-4 w-4" />
+								Create from SMS
+							</Button>
+						</div>
 					}
 					noData={{
 						title: isLoading
 							? "Loading transactions..."
 							: "No transactions found",
-						description: "Get started by creating a transaction from SMS.",
+						description:
+							categoryFilter === ALL_CATEGORIES_FILTER
+								? "Get started by creating a transaction from SMS."
+								: "Try a different category filter or create a transaction from SMS.",
 					}}
 					onRowClick={(row) =>
 						navigate({
